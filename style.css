@@ -193,13 +193,31 @@ footer{background:linear-gradient(180deg,var(--navy),#081222);color:#fff;padding
 .modal-body{padding:24px}
 .modal-view{display:none}
 .modal-view.active{display:block}
-.form-group{margin-bottom:16px}
-.form-group label{display:block;font-size:13.5px;font-weight:700;color:var(--navy);margin-bottom:7px}
-.form-group input,.form-group select,.form-group textarea{width:100%;padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);font-family:inherit;font-size:14px;transition:.3s;background:#fff;color:var(--ink)}
+.form-group{margin-bottom:18px;animation:fieldIn .5s var(--ease-bounce) both}
+.form-group:nth-child(1){animation-delay:.02s}
+.form-group:nth-child(2){animation-delay:.06s}
+.form-group:nth-child(3){animation-delay:.1s}
+.form-group:nth-child(4){animation-delay:.14s}
+.form-group:nth-child(5){animation-delay:.18s}
+.form-group:nth-child(6){animation-delay:.22s}
+.form-group:nth-child(7){animation-delay:.26s}
+.form-group:nth-child(8){animation-delay:.3s}
+@keyframes fieldIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.form-group label{display:block;font-size:13.5px;font-weight:700;color:var(--navy);margin-bottom:8px}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:13px 16px;border-radius:14px;border:1.5px solid var(--line);font-family:inherit;font-size:14px;transition:.3s var(--ease);background:linear-gradient(180deg,#fff,#fbfbfd);color:var(--ink);box-shadow:inset 0 1px 2px rgba(11,28,51,.03)}
 .form-group select{cursor:pointer}
 .form-group input[type="file"]{padding:9px 12px;font-size:12.5px;cursor:pointer}
-.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--gold)}
+.form-group input:hover,.form-group select:hover,.form-group textarea:hover{border-color:var(--gold-light)}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 4px rgba(201,162,39,.15),0 8px 18px rgba(201,162,39,.12);transform:translateY(-1px)}
 .form-group textarea{resize:vertical;min-height:90px}
+.input-wrap{position:relative}
+.input-wrap input,.input-wrap select,.input-wrap textarea{padding-right:56px}
+.input-wrap input[type="file"]{padding-right:52px}
+.input-wrap .input-icon{position:absolute;top:50%;right:11px;transform:translateY(-50%);width:32px;height:32px;flex:none;pointer-events:none;transition:transform .3s var(--ease-bounce),box-shadow .3s var(--ease)}
+.input-wrap .input-icon svg{width:15px;height:15px}
+.input-wrap .input-icon.icon-top{top:18px;transform:none}
+.input-wrap:focus-within .input-icon{transform:translateY(-50%) scale(1.12);box-shadow:inset 0 1px 0 rgba(255,255,255,.15),0 0 0 6px rgba(201,162,39,.18),0 10px 22px rgba(11,28,51,.3)}
+.input-wrap:focus-within .input-icon.icon-top{transform:scale(1.12)}
 .modal-actions{display:flex;gap:12px;margin-top:20px}
 .modal-actions .btn{flex:1;justify-content:center}
 .confirm-view{text-align:center;padding:10px 0}
@@ -233,14 +251,20 @@ footer{background:linear-gradient(180deg,var(--navy),#081222);color:#fff;padding
 .elig-need-chip .icon-3d svg{width:13px;height:13px}
 .elig-cta{text-align:center;margin-top:20px}
 .elig-disclaimer{max-width:720px;margin:22px auto 0;text-align:center;font-size:12.5px;color:var(--ink-soft);line-height:1.9;border-top:1px dashed var(--line);padding-top:18px}
-.elig-inline-wizard{display:none;margin-top:44px;background:#fff;border-radius:24px;box-shadow:var(--shadow-strong);overflow:hidden}
-.elig-inline-wizard.show{display:block}
-.elig-inline-wizard .modal-header{border-bottom:1px solid var(--line)}
-.elig-inline-wizard .modal-body{padding:28px}
+.elig-inline-wizard{display:none;margin:44px auto 0;max-width:800px;background:#fff;border-radius:26px;box-shadow:var(--shadow-strong);overflow:hidden;position:relative}
+.elig-inline-wizard::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--gold-light),var(--gold),var(--gold-light));z-index:1}
+.elig-inline-wizard.show{display:block;animation:wizardIn .55s var(--ease-bounce)}
+@keyframes wizardIn{from{opacity:0;transform:translateY(24px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+.elig-inline-wizard .modal-header{border-bottom:1px solid var(--line);background:linear-gradient(135deg,rgba(201,162,39,.07),rgba(11,28,51,.02))}
+.elig-inline-wizard .modal-header h3{display:flex;align-items:center;gap:12px}
+.elig-inline-wizard .modal-header .icon-3d{width:36px;height:36px;flex:none}
+.elig-inline-wizard .modal-header .icon-3d svg{width:18px;height:18px}
+.elig-inline-wizard .modal-body{padding:30px}
 .stage-progress{display:flex;align-items:center;gap:6px;margin-bottom:10px}
-.stage-dot{flex:1;height:6px;border-radius:6px;background:var(--line);transition:background .4s var(--ease)}
+.stage-dot{flex:1;height:6px;border-radius:6px;background:var(--line);transition:background .4s var(--ease),box-shadow .4s var(--ease)}
 .stage-dot.done{background:linear-gradient(135deg,var(--gold-light),var(--gold))}
-.stage-dot.current{background:var(--navy-3)}
+.stage-dot.current{background:var(--navy-3);box-shadow:0 0 0 0 rgba(201,162,39,.4);animation:dotPulse 1.8s ease-in-out infinite}
+@keyframes dotPulse{0%,100%{box-shadow:0 0 0 0 rgba(201,162,39,.35)}50%{box-shadow:0 0 0 5px rgba(201,162,39,.18)}}
 .stage-label{font-size:12.5px;font-weight:800;color:var(--gold);text-align:center;margin-bottom:20px;letter-spacing:.3px}
 .choice-group{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
 .choice-chip{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:50px;border:1.5px solid var(--line);font-size:13px;font-weight:700;color:var(--ink-soft);cursor:pointer;transition:.25s var(--ease);user-select:none}
@@ -288,6 +312,8 @@ footer{background:linear-gradient(180deg,var(--navy),#081222);color:#fff;padding
 .stage-label{font-size:11.5px}
 .elig-need-chip{padding:8px 14px;font-size:12px}
 .review-row{font-size:12px}
-.elig-inline-wizard{margin-top:30px;border-radius:18px}
+.elig-inline-wizard{margin-top:30px;border-radius:18px;max-width:100%}
 .elig-inline-wizard .modal-body{padding:16px}
+.input-wrap .input-icon{width:28px;height:28px;right:8px}
+.input-wrap input,.input-wrap select,.input-wrap textarea{padding-right:46px}
 }
