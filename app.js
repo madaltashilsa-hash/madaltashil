@@ -426,7 +426,7 @@ var html='';
 for(var i=1;i<=6;i++){
 var cls='stage-dot';
 if(i<elig.step)cls+=' done';else if(i===elig.step)cls+=' current';
-html+='<span class="'+cls+'">'+i+'</span>';
+html+='<span class="'+cls+'" data-num="'+i+'"></span>';
 }
 wrap.innerHTML=html;
 var label=document.getElementById('eligStageLabel');
@@ -866,7 +866,7 @@ injectModals();
 initReveal();
 initStats();
 initModalClosers();
-initEligibilityFlow();
+initEligibilityFlow();resetElig();elig.step=1;switchView('eligibilityModal','wizard');renderEligStage();var __eligAutoOpenEl=document.getElementById('eligibilityModal');if(__eligAutoOpenEl)__eligAutoOpenEl.classList.add('show');
 initCustomRequestFlow();
 initChooserFlow();
 initInquiryFlow();
