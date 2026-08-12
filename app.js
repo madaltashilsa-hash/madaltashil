@@ -243,7 +243,7 @@ basic:{name:'',phone:'',email:'',city:'',age:''},
 job:{status:'',title:'',sector:''},
 fin:{sources:[],income:'',hasObligations:'',obligationsValue:'',hasExtraIncome:'',extraIncomeValue:'',extraIncomeSource:'',salaryDeposit:''},
 gen:{hasHold:'',holdTypes:[],hadHold:'',hadTypes:[]},
-prod:{value:'',type:'',brand:'',specs:'',color:'',name:'',images:[]}
+prod:{value:'',type:''}
 };
 function resetElig(){
 elig.step=1;
@@ -251,9 +251,26 @@ elig.basic={name:'',phone:'',email:'',city:'',age:''};
 elig.job={status:'',title:'',sector:''};
 elig.fin={sources:[],income:'',hasObligations:'',obligationsValue:'',hasExtraIncome:'',extraIncomeValue:'',extraIncomeSource:'',salaryDeposit:''};
 elig.gen={hasHold:'',holdTypes:[],hadHold:'',hadTypes:[]};
-elig.prod={value:'',type:'',brand:'',specs:'',color:'',name:'',images:[]};
+elig.prod={value:'',type:''};
 }
-function escAttr(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}function renderImgPreview(){var list=document.getElementById('elgProdImagesList');if(!list)return;var files=elig.prod.images||[];if(files.length===0){list.innerHTML='';return;}var html='';for(var i=0;i<files.length;i++){html+='<span class="img-preview-chip"><b>'+(i+1)+'.</b> '+escAttr(files[i].name)+'</span>';}list.innerHTML=html;}
+function escAttr(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+/* تنسيق قيمة مالية بصيغة الريال السعودي مع فواصل الآلاف - تُستخدم فقط لعرض قيمة المنتج */
+function formatSAR(n){
+var x=Math.round(Number(n)||0);
+var neg=x<0;if(neg)x=-x;
+var s=String(x).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+return (neg?'-':'')+s+' ريال سعودي';
+}
+/* أداة تنبيه صغيرة (Toast) لتحسين تجربة الإشعارات بدل alert() في بعض الحالات */
+function showToast(msg){
+var host=document.getElementById('appToastHost');
+if(!host){host=document.createElement('div');host.id='appToastHost';host.className='toast-host';document.body.appendChild(host);}
+var t=document.createElement('div');
+t.className='toast-item';
+t.textContent=msg;
+host.appendChild(t);
+setTimeout(function(){t.classList.add('hide');setTimeout(function(){t.remove();},350);},2400);
+}
 function val(id){var e=document.getElementById(id);return e?e.value.trim():'';}
 function setFieldError(id,msg){
 var el=document.getElementById(id);if(!el)return;
@@ -271,14 +288,20 @@ function clearAllFieldErrors(container){
 var groups=container.querySelectorAll('.form-group.field-error');
 for(var i=0;i<groups.length;i++){groups[i].classList.remove('field-error');var m=groups[i].querySelector('.field-error-msg');if(m)m.textContent='';}
 }
+var AGE_MIN=18,AGE_MAX=80;
 function stage1Html(){
 var b=elig.basic;
+var ageVal=b.age?parseInt(b.age,10):AGE_MIN;
+if(isNaN(ageVal))ageVal=AGE_MIN;
 return ''
 +'<div class="form-group"><label>الاسم كما هو في الهوية</label><div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="user"></span><input type="text" id="elgName" value="'+escAttr(b.name)+'"></div><span class="field-error-msg"></span></div>'
 +'<div class="form-group"><label>رقم الجوال</label><div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="phone"></span><input type="tel" id="elgPhone" placeholder="05xxxxxxxx" value="'+escAttr(b.phone)+'"></div><span class="field-error-msg"></span></div>'
 +'<div class="form-group"><label>البريد الإلكتروني</label><div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="mail"></span><input type="email" id="elgEmail" value="'+escAttr(b.email)+'"></div><span class="field-error-msg"></span></div>'
 +'<div class="form-group"><label>المدينة</label><div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="location"></span><input type="text" id="elgCity" value="'+escAttr(b.city)+'"></div><span class="field-error-msg"></span></div>'
-+'<div class="form-group"><label>العمر</label><div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="calendar"></span><input type="number" id="elgAge" min="18" max="90" value="'+escAttr(b.age)+'"></div><span class="field-error-msg"></span></div>';
++'<div class="form-group"><label>العمر <span class="label-hint">(يشترط ألا يقل عن 18 سنة)</span></label>'
++'<div class="range-row age-range-row"><input type="range" id="elgAgeRange" min="'+AGE_MIN+'" max="'+AGE_MAX+'" step="1" value="'+ageVal+'"><input type="number" id="elgAge" class="age-number-input" min="'+AGE_MIN+'" max="'+AGE_MAX+'" value="'+ageVal+'"><span class="range-value-suffix">سنة</span></div>'
++'<div class="range-limits"><span>'+AGE_MIN+' سنة</span><span>'+AGE_MAX+' سنة</span></div>'
++'<span class="field-error-msg"></span></div>';
 }
 function stage2Html(){
 var j=elig.job;
@@ -350,6 +373,7 @@ return ''
 +'</div></div>'
 +'<div class="cond-block'+(g.hadHold==='yes'?' show':'')+'" id="hadTypeBlock"><div class="form-group"><label>نوع إيقاف الخدمات السابق</label><div class="choice-group">'+hadChips+'</div></div></div>';
 }
+var PROD_VALUE_MIN=500,PROD_VALUE_MAX=30000,PROD_VALUE_STEP=100;
 function stage5Html(){
 var p=elig.prod;
 var v=p.value?p.value:3000;
@@ -359,13 +383,9 @@ typeOpts+='<option value="'+PRODUCT_TYPES[i].v+'"'+(p.type===PRODUCT_TYPES[i].v?
 }
 return ''
 +'<div class="form-group"><label>نوع المنتج</label><div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="smartphone"></span><select id="elgProdType">'+typeOpts+'</select></div><span class="field-error-msg"></span></div>'
-+'<div class="form-group"><label>اسم المنتج</label><div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="tag"></span><input type="text" id="elgProdName" placeholder="مثال: آيفون 17 برو" value="'+escAttr(p.name)+'"></div><span class="field-error-msg"></span></div>'+'<div class="form-group"><label>الشركة المصنعة / العلامة التجارية</label><div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="company"></span><input type="text" id="elgProdBrand" placeholder="مثال: Apple، Samsung" value="'+escAttr(p.brand)+'"></div></div>'
-+'<div class="form-group"><label>مواصفات المنتج</label><div class="input-wrap"><span class="input-icon icon-3d gold icon-top" data-icon="ruler"></span><textarea id="elgProdSpecs" placeholder="مثال: 256GB، رام 8GB">'+escAttr(p.specs)+'</textarea></div></div>'
-+'<div class="form-group"><label>لون المنتج</label><div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="palette"></span><input type="text" id="elgProdColor" placeholder="مثال: أسود، فضي" value="'+escAttr(p.color)+'"></div></div>'
-+'<div class="form-group"><label>إرفاق صور المنتج (حد أقصى 5 صور)</label><div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="image"></span><input type="file" id="elgProdImages" accept="image/*" multiple></div><div class="img-preview-list" id="elgProdImagesList"></div><span class="field-error-msg"></span><span class="img-count-hint">يفضل أيضًا إرسال الصور يدويًا عبر واتساب بعد إرسال الطلب لضمان استلامها بجودة كاملة.</span></div>'
-+'<div class="form-group"><label>قيمة المنتج (500 - 30,000 ريال)</label>'
-+'<div class="range-row"><input type="range" id="elgProdValue" min="500" max="30000" step="100" value="'+v+'"><span class="range-value" id="elgProdValueOut">'+v+' ريال</span></div>'
-+'<div class="range-limits"><span>500 ريال</span><span>30,000 ريال</span></div>'
++'<div class="form-group"><label>قيمة المنتج <span class="label-hint">(من '+formatSAR(PROD_VALUE_MIN)+' إلى '+formatSAR(PROD_VALUE_MAX)+')</span></label>'
++'<div class="range-row"><input type="range" id="elgProdValue" min="'+PROD_VALUE_MIN+'" max="'+PROD_VALUE_MAX+'" step="'+PROD_VALUE_STEP+'" value="'+v+'"><span class="range-value" id="elgProdValueOut">'+formatSAR(v)+'</span></div>'
++'<div class="range-limits"><span>'+formatSAR(PROD_VALUE_MIN)+'</span><span>'+formatSAR(PROD_VALUE_MAX)+'</span></div>'
 +'<span class="field-error-msg"></span></div>';
 }
 function jobStatusLabel(v){for(var i=0;i<JOB_STATUSES.length;i++){if(JOB_STATUSES[i].v===v)return JOB_STATUSES[i].l;}return '—';}
@@ -387,7 +407,7 @@ function stage6Html(){
 var b=elig.basic,j=elig.job,f=elig.fin,g=elig.gen,p=elig.prod;
 var html='';
 html+='<div class="review-block"><div class="review-block-head"><h4>المعلومات الأساسية</h4><button type="button" class="review-edit-btn" data-goto="1">تعديل</button></div>'
-+reviewRow('الاسم',b.name)+reviewRow('رقم الجوال',b.phone)+reviewRow('البريد الإلكتروني',b.email)+reviewRow('المدينة',b.city)+reviewRow('العمر',b.age)
++reviewRow('الاسم',b.name)+reviewRow('رقم الجوال',b.phone)+reviewRow('البريد الإلكتروني',b.email)+reviewRow('المدينة',b.city)+reviewRow('العمر',b.age?b.age+' سنة':'—')
 +'</div>';
 html+='<div class="review-block"><div class="review-block-head"><h4>المعلومات الوظيفية</h4><button type="button" class="review-edit-btn" data-goto="2">تعديل</button></div>'
 +reviewRow('الحالة الوظيفية',jobStatusLabel(j.status));
@@ -410,41 +430,55 @@ if(g.hadHold==='yes'){html+=reviewRow('نوع إيقاف الخدمات السا
 html+='</div>';
 html+='<div class="review-block"><div class="review-block-head"><h4>معلومات المنتج</h4><button type="button" class="review-edit-btn" data-goto="5">تعديل</button></div>';
 html+=reviewRow('نوع المنتج',productTypeLabel(p.type));
-if(p.brand)html+=reviewRow('الشركة المصنعة',p.brand);
-if(p.color)html+=reviewRow('لون المنتج',p.color);
-if(p.specs)html+=reviewRow('مواصفات المنتج',p.specs);
-if(p.name)html+=reviewRow('اسم المنتج',p.name);if(p.images&&p.images.length)html+=reviewRow('عدد الصور المرفقة',p.images.length+' صورة');
-html+=reviewRow('قيمة المنتج المطلوبة',(p.value?p.value+' ريال':'—'));
+html+=reviewRow('قيمة المنتج المطلوبة',(p.value?formatSAR(p.value):'—'));
 html+='</div>';
 html+='<p class="elig-disclaimer">يرجى التأكد من صحة جميع البيانات المدخلة قبل إرسال الطلب.</p>';
 return html;
 }
+/* مصدر واحد للحقيقة لعدد مراحل نموذج التحقق من الأهلية - أي تعديل هنا ينعكس تلقائيًا على مسار التقدم بالكامل */
+var ELIG_STAGE_FNS=[stage1Html,stage2Html,stage3Html,stage4Html,stage5Html,stage6Html];
 var ELIG_STAGE_LABELS=['المعلومات الأساسية','المعلومات الوظيفية','المعلومات المالية','المعلومات العامة','معلومات المنتج','مراجعة وإرسال'];
+var ELIG_STAGE_DESCRIPTIONS=[
+'أدخل بياناتك الشخصية الأساسية للتواصل معك.',
+'أخبرنا عن حالتك الوظيفية الحالية.',
+'بيانات دخلك الشهري والتزاماتك المالية.',
+'بعض المعلومات العامة اللازمة لمراجعة طلبك.',
+'اختر نوع المنتج وحدد قيمته المطلوبة.',
+'راجع بياناتك جيدًا قبل إرسال الطلب.'
+];
+var ELIG_STAGE_COUNT=ELIG_STAGE_LABELS.length;
 function renderEligProgress(){
 var wrap=document.getElementById('eligProgress');if(!wrap)return;
 var html='';
-for(var i=1;i<=6;i++){
+for(var i=1;i<=ELIG_STAGE_COUNT;i++){
 var cls='stage-dot';
 if(i<elig.step)cls+=' done';else if(i===elig.step)cls+=' current';
 html+='<span class="'+cls+'" data-num="'+i+'"></span>';
 }
 wrap.innerHTML=html;
 var label=document.getElementById('eligStageLabel');
-if(label)label.textContent='الخطوة '+elig.step+' من 6 — '+ELIG_STAGE_LABELS[elig.step-1];
+if(label)label.textContent='الخطوة '+elig.step+' من '+ELIG_STAGE_COUNT+' — '+ELIG_STAGE_LABELS[elig.step-1];
+var desc=document.getElementById('eligStageDesc');
+if(desc)desc.textContent=ELIG_STAGE_DESCRIPTIONS[elig.step-1]||'';
 }
 function renderEligNav(){
 var wrap=document.getElementById('eligNavActions');if(!wrap)return;
-var html='';
+var html='<div class="elig-nav-main">';
 if(elig.step>1){html+='<button type="button" class="btn btn-outline-navy" id="eligBackBtn">رجوع</button>';}
-if(elig.step<6){html+='<button type="button" class="btn btn-gold" id="eligNextBtn">التالي</button>';}
+if(elig.step<ELIG_STAGE_COUNT){html+='<button type="button" class="btn btn-gold" id="eligNextBtn">التالي</button>';}
 else{html+='<button type="button" class="btn btn-gold" id="eligSubmitBtn">إرسال الطلب</button><button type="button" class="btn btn-outline-navy" id="eligEditBtn">تعديل البيانات</button>';}
+html+='</div>';
+html+='<div class="elig-nav-secondary"><button type="button" class="btn-text" id="eligSaveDraftBtn">حفظ ومتابعة لاحقًا</button><button type="button" class="btn-text btn-text-muted" id="eligCancelBtn">إلغاء</button></div>';
 wrap.innerHTML=html;
 }
 
 function renderEligStage(){
 var content=document.getElementById('eligStageContent');if(!content)return;
-var fn=[stage1Html,stage2Html,stage3Html,stage4Html,stage5Html,stage6Html][elig.step-1];
+var fn=ELIG_STAGE_FNS[elig.step-1];
 content.innerHTML=fn();
+content.classList.remove('stage-anim-in');
+void content.offsetWidth;
+content.classList.add('stage-anim-in');
 applyIcons();
 renderEligProgress();
 renderEligNav();
@@ -466,11 +500,17 @@ function bindEligStageEvents(){
 var back=document.getElementById('eligBackBtn');
 if(back)back.addEventListener('click',function(){saveCurrentStage();elig.step--;renderEligStage();});
 var next=document.getElementById('eligNextBtn');
-if(next)next.addEventListener('click',function(){if(validateCurrentStage()){saveCurrentStage();elig.step++;renderEligStage();}});
+if(next)next.addEventListener('click',function(){if(validateCurrentStage()){saveCurrentStage();elig.step++;renderEligStage();showToast('تم حفظ بياناتك، أكمل الخطوة التالية.');}});
 var submitBtn=document.getElementById('eligSubmitBtn');
 if(submitBtn)submitBtn.addEventListener('click',function(){openEligConfirm();});
 var editBtn=document.getElementById('eligEditBtn');
 if(editBtn)editBtn.addEventListener('click',function(){elig.step=1;renderEligStage();});
+var saveDraftBtn=document.getElementById('eligSaveDraftBtn');
+if(saveDraftBtn)saveDraftBtn.addEventListener('click',function(){saveDraft();showToast('تم حفظ طلبك، يمكنك المتابعة لاحقًا من نفس الجهاز.');closeModal('eligibilityModal');});
+var cancelBtn=document.getElementById('eligCancelBtn');
+if(cancelBtn)cancelBtn.addEventListener('click',function(){
+if(window.confirm('هل تريد إلغاء الطلب؟ سيتم حذف أي بيانات محفوظة.')){clearDraft();resetElig();closeModal('eligibilityModal');}
+});
 var editLinks=document.querySelectorAll('.review-edit-btn');
 for(var i=0;i<editLinks.length;i++){
 editLinks[i].addEventListener('click',function(){elig.step=parseInt(this.getAttribute('data-goto'),10);renderEligStage();});
@@ -521,14 +561,32 @@ if(idx>=0){elig.gen.hadTypes.splice(idx,1);this.classList.remove('selected');}
 else{elig.gen.hadTypes.push(v);this.classList.add('selected');}
 });
 }
+/* مؤشر قيمة المنتج - يتحكم حصريًا في elig.prod.value ولا يجوز ربطه بأي حقل مالي آخر (الدخل، الالتزامات، الدفعات...) */
 var rng=document.getElementById('elgProdValue');
 if(rng)rng.addEventListener('input',function(){
+var v=clamp(parseInt(this.value,10),PROD_VALUE_MIN,PROD_VALUE_MAX);
 var out=document.getElementById('elgProdValueOut');
-if(out)out.textContent=this.value+' ريال';
+if(out)out.textContent=formatSAR(v);
+elig.prod.value=String(v);
 });
 var typeSel=document.getElementById('elgProdType');
-if(typeSel)typeSel.addEventListener('change',function(){elig.prod.type=this.value;});var nameInp=document.getElementById('elgProdName');if(nameInp)nameInp.addEventListener('input',function(){elig.prod.name=this.value;});var imgsInp=document.getElementById('elgProdImages');if(imgsInp)imgsInp.addEventListener('change',function(){var files=Array.prototype.slice.call(this.files||[]);if(files.length>5){alert('يمكنك إرفاق 5 صور كحد أقصى');files=files.slice(0,5);}elig.prod.images=files;renderImgPreview();});renderImgPreview();
+if(typeSel)typeSel.addEventListener('change',function(){elig.prod.type=this.value;});
+/* مؤشر العمر - مرتبط حصريًا بـ elig.basic.age، محصور بين 18 و80 سنة عبر خاصيتي min/max على شريط التمرير نفسه */
+var ageRange=document.getElementById('elgAgeRange');
+var ageNum=document.getElementById('elgAge');
+if(ageRange)ageRange.addEventListener('input',function(){
+if(ageNum)ageNum.value=this.value;
+clearFieldError('elgAge');
+});
+if(ageNum)ageNum.addEventListener('input',function(){
+var n=parseInt(this.value,10);
+if(!isNaN(n)&&ageRange){var clamped=clamp(n,AGE_MIN,AGE_MAX);ageRange.value=clamped;}
+if(!isNaN(n)&&n<AGE_MIN){setFieldError('elgAge','نعتذر، يشترط ألا يقل العمر عن 18 سنة للاستفادة من هذه الخدمة.');}
+else if(!isNaN(n)&&n>AGE_MAX){setFieldError('elgAge','يرجى إدخال عمر لا يتجاوز 80 سنة.');}
+else{clearFieldError('elgAge');}
+});
 }
+function clamp(n,min,max){if(isNaN(n))return min;return Math.min(max,Math.max(min,n));}
 function saveCurrentStage(){
 var step=elig.step;
 if(step===1){
@@ -538,7 +596,7 @@ elig.job.status=val('elgJobStatus');elig.job.title=val('elgJobTitle');elig.job.s
 }else if(step===3){
 elig.fin.income=val('elgIncome');elig.fin.obligationsValue=val('elgObligValue');elig.fin.extraIncomeValue=val('elgExtraValue');elig.fin.extraIncomeSource=val('elgExtraSource');elig.fin.salaryDeposit=val('elgSalaryDeposit');
 }else if(step===5){
-elig.prod.value=val('elgProdValue')||elig.prod.value;elig.prod.type=val('elgProdType');elig.prod.name=val('elgProdName');elig.prod.brand=val('elgProdBrand');elig.prod.specs=val('elgProdSpecs');elig.prod.color=val('elgProdColor');
+elig.prod.value=val('elgProdValue')||elig.prod.value;elig.prod.type=val('elgProdType');
 }
 }
 function validateCurrentStage(){
@@ -552,8 +610,10 @@ if(!name){setFieldError('elgName','يرجى إدخال الاسم');ok=false;}
 if(!/^05[0-9]{8}$/.test(phone)){setFieldError('elgPhone','رقم الجوال يجب أن يبدأ بـ 05 ويتكون من 10 أرقام');ok=false;}
 if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){setFieldError('elgEmail','يرجى إدخال بريد إلكتروني صحيح');ok=false;}
 if(!city){setFieldError('elgCity','يرجى إدخال المدينة');ok=false;}
-var ageNum=parseInt(age,10);
-if(!age||isNaN(ageNum)||ageNum<18||ageNum>90){setFieldError('elgAge','يرجى إدخال عمر صحيح');ok=false;}
+var ageNumVal=parseInt(age,10);
+if(!age||isNaN(ageNumVal)){setFieldError('elgAge','يرجى إدخال عمر صحيح');ok=false;}
+else if(ageNumVal<AGE_MIN){setFieldError('elgAge','نعتذر، يشترط ألا يقل العمر عن 18 سنة للاستفادة من هذه الخدمة.');ok=false;}
+else if(ageNumVal>AGE_MAX){setFieldError('elgAge','يرجى إدخال عمر لا يتجاوز 80 سنة.');ok=false;}
 }else if(step===2){
 var status=val('elgJobStatus');
 if(!status){setFieldError('elgJobStatus','يرجى اختيار الحالة الوظيفية');ok=false;}
@@ -578,14 +638,36 @@ if(!elig.gen.hadHold){ok=false;alert('يرجى تحديد إذا سبق إيقا
 if(elig.gen.hadHold==='yes'&&elig.gen.hadTypes.length===0){ok=false;alert('يرجى تحديد نوع إيقاف الخدمات السابق');}
 }else if(step===5){
 if(!val('elgProdType')){setFieldError('elgProdType','يرجى اختيار نوع المنتج');ok=false;}
-if(!val('elgProdName')){setFieldError('elgProdName','يرجى إدخال اسم المنتج');ok=false;}
+var pv=parseInt(val('elgProdValue'),10);
+if(isNaN(pv)||pv<PROD_VALUE_MIN||pv>PROD_VALUE_MAX){setFieldError('elgProdValue','يرجى اختيار قيمة منتج ضمن الحدود المسموحة');ok=false;}
 }
 return ok;
 }
 
+var ELIG_DRAFT_KEY='madaltashil_elig_draft_v1';
+function saveDraft(){
+saveCurrentStage();
+try{localStorage.setItem(ELIG_DRAFT_KEY,JSON.stringify(elig));}catch(e){}
+}
+function loadDraft(){
+try{var raw=localStorage.getItem(ELIG_DRAFT_KEY);return raw?JSON.parse(raw):null;}catch(e){return null;}
+}
+function clearDraft(){
+try{localStorage.removeItem(ELIG_DRAFT_KEY);}catch(e){}
+}
 function openEligibility(){
+var draft=loadDraft();
+if(draft&&draft.step){
+var resume=window.confirm('لديك طلب محفوظ سابقًا، هل تريد المتابعة من حيث توقفت؟\nاضغط "موافق" للمتابعة، أو "إلغاء" لبدء طلب جديد.');
+if(resume){
+elig.step=draft.step;elig.basic=draft.basic||elig.basic;elig.job=draft.job||elig.job;elig.fin=draft.fin||elig.fin;elig.gen=draft.gen||elig.gen;elig.prod=draft.prod||elig.prod;
+}else{
+clearDraft();resetElig();elig.step=1;
+}
+}else{
 resetElig();
 elig.step=1;
+}
 switchView('eligibilityModal','wizard');
 renderEligStage();
 var m=document.getElementById('eligibilityModal');
@@ -603,6 +685,7 @@ function sendEligibility(){
 switchView('eligibilityModal','sending');
 var waWin=window.open('','_blank');
 var msg=buildEligibilityMessage();
+clearDraft();
 setTimeout(function(){
 if(waWin){waWin.location.href=waLink(msg);}else{window.open(waLink(msg),'_blank');}
 closeModal('eligibilityModal');
@@ -618,7 +701,7 @@ lines.push('الاسم: '+b.name);
 lines.push('رقم الجوال: '+b.phone);
 lines.push('البريد الإلكتروني: '+b.email);
 lines.push('المدينة: '+b.city);
-lines.push('العمر: '+b.age);
+lines.push('العمر: '+(b.age?b.age+' سنة':'—'));
 lines.push('');
 lines.push('== المعلومات الوظيفية ==');
 lines.push('الحالة الوظيفية: '+jobStatusLabel(j.status));
@@ -648,12 +731,8 @@ lines.push('هل سبق إيقاف خدماتكم؟ '+yesNoLabel(g.hadHold));
 if(g.hadHold==='yes')lines.push('نوع إيقاف الخدمات السابق: '+holdTypesLabel(g.hadTypes));
 lines.push('');
 lines.push('== معلومات المنتج ==');
-lines.push('اسم المنتج: '+(p.name||'—'));lines.push('نوع المنتج: '+productTypeLabel(p.type));
-if(p.brand)lines.push('الشركة المصنعة: '+p.brand);
-if(p.color)lines.push('لون المنتج: '+p.color);
-if(p.specs)lines.push('مواصفات المنتج: '+p.specs);
-if(p.images&&p.images.length)lines.push('ملاحظة: يوجد '+p.images.length+' صورة مرفقة للمنتج - يرجى إرسالها يدويًا عبر واتساب');
-lines.push('قيمة المنتج المطلوبة: '+(p.value?p.value+' ريال':'—'));
+lines.push('نوع المنتج: '+productTypeLabel(p.type));
+lines.push('قيمة المنتج المطلوبة: '+(p.value?formatSAR(p.value):'—'));
 return lines.join('\n');
 }
 function initEligibilityFlow(){
@@ -700,7 +779,8 @@ var html=''
 +'<div class="modal-view active" data-view="wizard">'
 +'<div class="stage-progress" id="eligProgress"></div>'
 +'<div class="stage-label" id="eligStageLabel"></div>'
-+'<div id="eligStageContent"></div>'
++'<p class="stage-desc" id="eligStageDesc"></p>'
++'<div id="eligStageContent" class="stage-anim-in"></div>'
 +'<div class="modal-actions" id="eligNavActions"></div>'
 +'</div>'
 +'<div class="modal-view" data-view="confirm"><div class="confirm-view">'
@@ -732,7 +812,7 @@ var crHtml=''
 +'<div class="form-group"><label>نوع المنتج</label><select id="crType"><option value="">اختر نوع المنتج</option><option value="phones">جوالات</option><option value="electronics">منتجات إلكترونية</option></select></div>'
 +'<div class="form-group"><label>العلامة التجارية المطلوبة</label><input type="text" id="crBrand"></div>'
 +'<div class="form-group"><label>الموديل المطلوب</label><input type="text" id="crModel"></div>'
-+'<div class="form-group"><label>مواصفات المنتج</label><textarea id="crSpecs"></textarea></div>'
++'<div class="form-group"><label>مواصفات المنتج</label><textarea id="crSpecs" class="textarea-lg"></textarea></div>'
 +'<div class="form-group"><label>الكمية</label><input type="number" id="crQty" value="1" min="1"></div>'
 +'<div class="form-group"><label>الميزانية التقريبية (اختياري)</label><input type="number" id="crBudget"></div>'
 +'<div class="form-group"><label>ملاحظات</label><textarea id="crNotes"></textarea></div>'
@@ -866,7 +946,7 @@ injectModals();
 initReveal();
 initStats();
 initModalClosers();
-initEligibilityFlow();resetElig();elig.step=1;switchView('eligibilityModal','wizard');renderEligStage();var __eligAutoOpenEl=document.getElementById('eligibilityModal');if(__eligAutoOpenEl)__eligAutoOpenEl.classList.add('show');
+initEligibilityFlow();
 initCustomRequestFlow();
 initChooserFlow();
 initInquiryFlow();
