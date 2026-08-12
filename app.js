@@ -53,7 +53,7 @@ function initSplash() {
   window.setTimeout(function () {
     document.body.classList.remove('splash-active');
     document.body.classList.add('splash-done');
-  }, 1800);
+  }, 5000);
 }
 
 function initHeaderScroll() {
