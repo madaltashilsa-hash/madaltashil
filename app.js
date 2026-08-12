@@ -27,7 +27,15 @@ verify:'<path d="M12 2l7 3v6c0 5-3 8-7 11-4-3-7-6-7-11V5z"/><path d="M9 12l2 2 4
 mail:'<rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 6l10 7 10-7"/>',
 phone:'<path d="M5 4h4l1.5 4.5L8 10.5a12 12 0 0 0 5.5 5.5l1.5-2.5L19.5 15V19a2 2 0 0 1-2 2C10 21 3 14 3 6a2 2 0 0 1 2-2z"/>',
 whatsapp:'<path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2z"/><path d="M8.4 7.6c.2-.5.4-.5.6-.5h.5c.2 0 .4 0 .6.4.2.5.7 1.7.7 1.9.1.2.1.3 0 .5-.1.2-.2.3-.3.5-.2.2-.3.3-.1.6.2.4.9 1.4 1.9 2.3 1.3 1.1 2.3 1.5 2.7 1.6.3.1.5.1.7-.1.2-.2.7-.8.9-1.1.2-.3.4-.2.6-.1.2.1 1.6.8 1.9 1 .3.1.5.2.5.3 0 .2 0 1-.4 1.5-.4.5-1.4 1-2.2 1-1.7 0-3.7-.8-5.3-2.2-1.7-1.5-2.8-3.2-3.1-4.4-.2-.7-.3-1.4.1-2z"/>',
-search:'<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>'
+search:'<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>',
+user:'<circle cx="12" cy="8" r="3.2"/><path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6"/>',
+location:'<path d="M12 21s7-6.5 7-12a7 7 0 0 0-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="9" r="2.4"/>',
+calendar:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/>',
+tag:'<path d="M3 12V5a2 2 0 0 1 2-2h7l9 9-9 9-9-9z"/><circle cx="8" cy="8" r="1.3"/>',
+palette:'<path d="M12 3a9 9 0 1 0 0 18c1 0 1.6-.6 1.6-1.4 0-.4-.2-.7-.4-1-.2-.3-.4-.6-.4-1 0-.8.6-1.4 1.4-1.4H16a4 4 0 0 0 4-4c0-5-3.6-9-8-9z"/><circle cx="7.5" cy="10.5" r="1"/><circle cx="10" cy="7" r="1"/><circle cx="14" cy="7" r="1"/><circle cx="16.5" cy="10.5" r="1"/>',
+ruler:'<path d="M4 15l5-5 10 10-5 5z"/><path d="M9 10l2 2M12 7l2 2M6 13l2 2"/>',
+image:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="10" r="1.8"/><path d="M21 16l-5-5-4 4-2-2-6 6"/>',
+money:'<circle cx="12" cy="12" r="9"/><path d="M9 15s.5 1.5 3 1.5 3-1.2 3-2.3c0-2.4-6-1.1-6-3.5 0-1.1 1.2-2.2 3-2.2s3 1 3 1"/><path d="M12 7v1M12 16v1"/>'
 };
 function svgOf(name){return '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+(ICONS[name]||'')+'</svg>';}
 function applyIcons(){
@@ -266,11 +274,11 @@ for(var i=0;i<groups.length;i++){groups[i].classList.remove('field-error');var m
 function stage1Html(){
 var b=elig.basic;
 return ''
-+'<div class="form-group"><label>الاسم كما هو في الهوية</label><input type="text" id="elgName" value="'+escAttr(b.name)+'"><span class="field-error-msg"></span></div>'
-+'<div class="form-group"><label>رقم الجوال</label><input type="tel" id="elgPhone" placeholder="05xxxxxxxx" value="'+escAttr(b.phone)+'"><span class="field-error-msg"></span></div>'
-+'<div class="form-group"><label>البريد الإلكتروني</label><input type="email" id="elgEmail" value="'+escAttr(b.email)+'"><span class="field-error-msg"></span></div>'
-+'<div class="form-group"><label>المدينة</label><input type="text" id="elgCity" value="'+escAttr(b.city)+'"><span class="field-error-msg"></span></div>'
-+'<div class="form-group"><label>العمر</label><input type="number" id="elgAge" min="18" max="90" value="'+escAttr(b.age)+'"><span class="field-error-msg"></span></div>';
++'<div class="form-group"><label>الاسم كما هو في الهوية</label><div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="user"></span><input type="text" id="elgName" value="'+escAttr(b.name)+'"></div><span class="field-error-msg"></span></div>'
++'<div class="form-group"><label>رقم الجوال</label><div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="phone"></span><input type="tel" id="elgPhone" placeholder="05xxxxxxxx" value="'+escAttr(b.phone)+'"></div><span class="field-error-msg"></span></div>'
++'<div class="form-group"><label>البريد الإلكتروني</label><div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="mail"></span><input type="email" id="elgEmail" value="'+escAttr(b.email)+'"></div><span class="field-error-msg"></span></div>'
++'<div class="form-group"><label>المدينة</label><div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="location"></span><input type="text" id="elgCity" value="'+escAttr(b.city)+'"></div><span class="field-error-msg"></span></div>'
++'<div class="form-group"><label>العمر</label><div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="calendar"></span><input type="number" id="elgAge" min="18" max="90" value="'+escAttr(b.age)+'"></div><span class="field-error-msg"></span></div>';
 }
 function stage2Html(){
 var j=elig.job;
@@ -280,10 +288,10 @@ opts+='<option value="'+JOB_STATUSES[i].v+'"'+(j.status===JOB_STATUSES[i].v?' se
 }
 var showExtra=JOB_WITH_TITLE.indexOf(j.status)>=0;
 return ''
-+'<div class="form-group"><label>الحالة الوظيفية</label><select id="elgJobStatus">'+opts+'</select><span class="field-error-msg"></span></div>'
++'<div class="form-group"><label>الحالة الوظيفية</label><div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="business"></span><select id="elgJobStatus">'+opts+'</select></div><span class="field-error-msg"></span></div>'
 +'<div class="cond-block'+(showExtra?' show':'')+'" id="jobExtra">'
-+'<div class="form-group"><label>مسمى الوظيفة</label><input type="text" id="elgJobTitle" value="'+escAttr(j.title)+'"></div>'
-+'<div class="form-group"><label>القطاع</label><input type="text" id="elgJobSector" value="'+escAttr(j.sector)+'"></div>'
++'<div class="form-group"><label>مسمى الوظيفة</label><div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="tag"></span><input type="text" id="elgJobTitle" value="'+escAttr(j.title)+'"></div></div>'
++'<div class="form-group"><label>القطاع</label><div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="company"></span><input type="text" id="elgJobSector" value="'+escAttr(j.sector)+'"></div></div>'
 +'</div>';
 }
 function stage3Html(){
@@ -299,21 +307,21 @@ var showExtraVal=f.hasExtraIncome==='yes';
 var showSalaryDeposit=JOB_WITH_TITLE.indexOf(elig.job.status)>=0;
 return ''
 +'<div class="form-group"><label>مصدر الدخل (يمكن اختيار أكثر من مصدر)</label><div class="choice-group" id="finSources">'+srcHtml+'</div></div>'
-+'<div class="form-group"><label>إجمالي الدخل الشهري</label><input type="number" id="elgIncome" value="'+escAttr(f.income)+'"><span class="field-error-msg"></span></div>'
++'<div class="form-group"><label>إجمالي الدخل الشهري</label><div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="money"></span><input type="number" id="elgIncome" value="'+escAttr(f.income)+'"></div><span class="field-error-msg"></span></div>'
 +'<div class="form-group"><label>هل توجد التزامات شهرية؟</label><div class="choice-group">'
 +'<button type="button" class="choice-chip'+(f.hasObligations==='yes'?' selected':'')+'" data-yesno="hasObligations" data-val="yes">نعم</button>'
 +'<button type="button" class="choice-chip'+(f.hasObligations==='no'?' selected':'')+'" data-yesno="hasObligations" data-val="no">لا</button>'
 +'</div></div>'
-+'<div class="cond-block'+(showObligVal?' show':'')+'" id="obligBlock"><div class="form-group"><label>قيمة الالتزامات الشهرية</label><input type="number" id="elgObligValue" value="'+escAttr(f.obligationsValue)+'"></div></div>'
++'<div class="cond-block'+(showObligVal?' show':'')+'" id="obligBlock"><div class="form-group"><label>قيمة الالتزامات الشهرية</label><div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="money"></span><input type="number" id="elgObligValue" value="'+escAttr(f.obligationsValue)+'"></div></div></div>'
 +'<div class="form-group"><label>هل يوجد دخل إضافي؟</label><div class="choice-group">'
 +'<button type="button" class="choice-chip'+(f.hasExtraIncome==='yes'?' selected':'')+'" data-yesno="hasExtraIncome" data-val="yes">نعم</button>'
 +'<button type="button" class="choice-chip'+(f.hasExtraIncome==='no'?' selected':'')+'" data-yesno="hasExtraIncome" data-val="no">لا</button>'
 +'</div></div>'
 +'<div class="cond-block'+(showExtraVal?' show':'')+'" id="extraBlock">'
-+'<div class="form-group"><label>قيمة الدخل الإضافي</label><input type="number" id="elgExtraValue" value="'+escAttr(f.extraIncomeValue)+'"></div>'
-+'<div class="form-group"><label>مصدر الدخل الإضافي</label><input type="text" id="elgExtraSource" value="'+escAttr(f.extraIncomeSource)+'"></div>'
++'<div class="form-group"><label>قيمة الدخل الإضافي</label><div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="money"></span><input type="number" id="elgExtraValue" value="'+escAttr(f.extraIncomeValue)+'"></div></div>'
++'<div class="form-group"><label>مصدر الدخل الإضافي</label><div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="tag"></span><input type="text" id="elgExtraSource" value="'+escAttr(f.extraIncomeSource)+'"></div></div>'
 +'</div>'
-+'<div class="cond-block'+(showSalaryDeposit?' show':'')+'" id="salaryDepositBlock"><div class="form-group"><label>قيمة الراتب المودع في الحساب البنكي</label><input type="number" id="elgSalaryDeposit" value="'+escAttr(f.salaryDeposit)+'"></div></div>';
++'<div class="cond-block'+(showSalaryDeposit?' show':'')+'" id="salaryDepositBlock"><div class="form-group"><label>قيمة الراتب المودع في الحساب البنكي</label><div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="money"></span><input type="number" id="elgSalaryDeposit" value="'+escAttr(f.salaryDeposit)+'"></div></div></div>';
 }
 
 function stage4Html(){
@@ -350,11 +358,11 @@ for(var i=0;i<PRODUCT_TYPES.length;i++){
 typeOpts+='<option value="'+PRODUCT_TYPES[i].v+'"'+(p.type===PRODUCT_TYPES[i].v?' selected':'')+'>'+PRODUCT_TYPES[i].l+'</option>';
 }
 return ''
-+'<div class="form-group"><label>نوع المنتج</label><select id="elgProdType">'+typeOpts+'</select><span class="field-error-msg"></span></div>'
-+'<div class="form-group"><label>اسم المنتج</label><input type="text" id="elgProdName" placeholder="مثال: آيفون 17 برو" value="'+escAttr(p.name)+'"><span class="field-error-msg"></span></div>'+'<div class="form-group"><label>الشركة المصنعة / العلامة التجارية</label><input type="text" id="elgProdBrand" placeholder="مثال: Apple، Samsung" value="'+escAttr(p.brand)+'"></div>'
-+'<div class="form-group"><label>مواصفات المنتج</label><textarea id="elgProdSpecs" placeholder="مثال: 256GB، رام 8GB">'+escAttr(p.specs)+'</textarea></div>'
-+'<div class="form-group"><label>لون المنتج</label><input type="text" id="elgProdColor" placeholder="مثال: أسود، فضي" value="'+escAttr(p.color)+'"></div>'
-+'<div class="form-group"><label>إرفاق صور المنتج (حد أقصى 5 صور)</label><input type="file" id="elgProdImages" accept="image/*" multiple><div class="img-preview-list" id="elgProdImagesList"></div><span class="field-error-msg"></span><span class="img-count-hint">يفضل أيضًا إرسال الصور يدويًا عبر واتساب بعد إرسال الطلب لضمان استلامها بجودة كاملة.</span></div>'
++'<div class="form-group"><label>نوع المنتج</label><div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="smartphone"></span><select id="elgProdType">'+typeOpts+'</select></div><span class="field-error-msg"></span></div>'
++'<div class="form-group"><label>اسم المنتج</label><div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="tag"></span><input type="text" id="elgProdName" placeholder="مثال: آيفون 17 برو" value="'+escAttr(p.name)+'"></div><span class="field-error-msg"></span></div>'+'<div class="form-group"><label>الشركة المصنعة / العلامة التجارية</label><div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="company"></span><input type="text" id="elgProdBrand" placeholder="مثال: Apple، Samsung" value="'+escAttr(p.brand)+'"></div></div>'
++'<div class="form-group"><label>مواصفات المنتج</label><div class="input-wrap"><span class="input-icon icon-3d gold icon-top" data-icon="ruler"></span><textarea id="elgProdSpecs" placeholder="مثال: 256GB، رام 8GB">'+escAttr(p.specs)+'</textarea></div></div>'
++'<div class="form-group"><label>لون المنتج</label><div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="palette"></span><input type="text" id="elgProdColor" placeholder="مثال: أسود، فضي" value="'+escAttr(p.color)+'"></div></div>'
++'<div class="form-group"><label>إرفاق صور المنتج (حد أقصى 5 صور)</label><div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="image"></span><input type="file" id="elgProdImages" accept="image/*" multiple></div><div class="img-preview-list" id="elgProdImagesList"></div><span class="field-error-msg"></span><span class="img-count-hint">يفضل أيضًا إرسال الصور يدويًا عبر واتساب بعد إرسال الطلب لضمان استلامها بجودة كاملة.</span></div>'
 +'<div class="form-group"><label>قيمة المنتج (500 - 30,000 ريال)</label>'
 +'<div class="range-row"><input type="range" id="elgProdValue" min="500" max="30000" step="100" value="'+v+'"><span class="range-value" id="elgProdValueOut">'+v+' ريال</span></div>'
 +'<div class="range-limits"><span>500 ريال</span><span>30,000 ريال</span></div>'
@@ -437,6 +445,7 @@ function renderEligStage(){
 var content=document.getElementById('eligStageContent');if(!content)return;
 var fn=[stage1Html,stage2Html,stage3Html,stage4Html,stage5Html,stage6Html][elig.step-1];
 content.innerHTML=fn();
+applyIcons();
 renderEligProgress();
 renderEligNav();
 bindEligStageEvents();
@@ -686,7 +695,7 @@ var html=''
 +'</div>'
 +'<p class="elig-disclaimer">قد تختلف نتيجة الأهلية بحسب البيانات والمتطلبات والمعايير المعتمدة للخدمة، وتعبئة النموذج لا تعني الموافقة النهائية.</p>'
 +'<div class="elig-inline-wizard" id="eligibilityModal">'
-+'<div class="modal-header"><h3>تحقق من أهليتك</h3><button class="modal-close" data-close="eligibilityModal" type="button">×</button></div>'
++'<div class="modal-header"><h3><span class="icon-3d gold" data-icon="verify"></span>تحقق من أهليتك</h3><button class="modal-close" data-close="eligibilityModal" type="button">×</button></div>'
 +'<div class="modal-body">'
 +'<div class="modal-view active" data-view="wizard">'
 +'<div class="stage-progress" id="eligProgress"></div>'
