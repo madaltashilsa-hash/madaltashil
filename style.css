@@ -45,9 +45,9 @@ button { font-family:inherit; cursor:pointer; border:none; background:none; }
 @keyframes rippleAnim { to { transform:scale(3); opacity:0; } }
 
 /* Splash */
-.splash { position:fixed; inset:0; z-index:9999; background:linear-gradient(160deg,var(--navy),var(--navy-2)); display:flex; align-items:center; justify-content:center; transition:opacity .7s var(--ease), visibility .7s; }
+.splash { position:fixed; inset:0; z-index:9999; background:#ffffff; display:flex; align-items:center; justify-content:center; transition:opacity .7s var(--ease), visibility .7s; }
 .splash-inner { text-align:center; }
-.splash-logo { width:230px; height:auto; margin:0 auto; object-fit:contain; animation:logoReveal 1s var(--ease) forwards; filter:drop-shadow(0 14px 34px rgba(0,0,0,.35)); }
+.splash-logo { width:320px; height:auto; margin:0 auto; object-fit:contain; animation:logoReveal 1s var(--ease) forwards; filter:drop-shadow(0 10px 24px rgba(11,28,51,.18)); }
 .splash-text { display:flex; flex-direction:column; gap:6px; opacity:0; animation:fadeUp .8s var(--ease) .35s forwards; }
 .splash-title { color:var(--gold-light); font-weight:800; font-size:20px; letter-spacing:.5px; }
 .splash-slogan { color:rgba(255,255,255,.75); font-size:14px; }
@@ -63,7 +63,7 @@ body.sidebar-open .overlay { opacity:1; visibility:visible; }
 /* Header */
 .header { position:fixed; top:0; right:0; left:0; z-index:900; transition:background .4s var(--ease), box-shadow .4s var(--ease); }
 .header-inner { display:flex; align-items:center; justify-content:space-between; padding:18px 24px; gap:20px; }
-.logo-link { display:inline-flex; align-items:center; background:#fff; padding:8px 18px; border-radius:16px; box-shadow:0 8px 20px rgba(0,0,0,.18); transition:padding .35s var(--ease), box-shadow .35s var(--ease), transform .35s var(--ease); }
+.logo-link { display:inline-flex; align-items:center; background:#fff; padding:6px 14px; border-radius:14px; box-shadow:0 8px 20px rgba(0,0,0,.18); transition:padding .35s var(--ease), box-shadow .35s var(--ease), transform .35s var(--ease); }
 .logo-link:hover { transform:scale(1.06); box-shadow:0 12px 28px rgba(0,0,0,.24); }
 .logo-img { height:88px; transition:height .35s var(--ease); animation:logoPop .8s var(--ease); }
 @keyframes logoPop { 0% { opacity:0; transform:scale(.7) translateY(-12px); } 100% { opacity:1; transform:scale(1) translateY(0); } }
@@ -192,7 +192,8 @@ body.sidebar-open .float-whatsapp { opacity:0; visibility:hidden; pointer-events
 /* Footer */
 .footer { background:#081527; color:rgba(255,255,255,.75); padding:60px 0 0; }
 .footer-inner { display:grid; grid-template-columns:1fr; gap:34px; padding-bottom:40px; border-bottom:1px solid rgba(255,255,255,.08); text-align:center; }
-.footer-logo { width:150px; margin:0 auto 6px; transition:transform .4s var(--ease); }
+.footer-brand { display:inline-flex; align-items:center; justify-content:center; background:#fff; padding:14px 22px; border-radius:18px; box-shadow:0 10px 26px rgba(0,0,0,.25); margin:0 auto 18px; }
+.footer-logo { width:130px; margin:0; transition:transform .4s var(--ease); }
 .footer-logo:hover { transform:scale(1.05); }
 .footer-name { color:#fff; font-weight:800; margin-bottom:4px; }
 .footer-slogan { color:var(--gold-light); font-size:13px; }
