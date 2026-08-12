@@ -449,7 +449,7 @@
     });
     if(cancelConfirmBtn)cancelConfirmBtn.addEventListener('click',function(){switchView('quoteModal','form');});
     if(confirmBtn)confirmBtn.addEventListener('click',function(){
-      switchView('quoteModal','sending');
+      switchView('quoteModal','sending');var waWin=window.open('','_blank');
       var id=document.getElementById('quoteModal').getAttribute('data-product');
       var p=findProduct(id);
       var name=document.getElementById('qName').value.trim();
@@ -467,7 +467,7 @@
         'رقم الجوال: '+phone+'\n'+
         'ملاحظات: '+notes;
       setTimeout(function(){
-        window.open(waLink(msg),'_blank');
+        if(waWin){waWin.location.href=waLink(msg);}else{window.open(waLink(msg),'_blank');}
         closeModal('quoteModal');
       },5000);
     });
@@ -495,7 +495,7 @@
     });
     if(cancelConfirmBtn)cancelConfirmBtn.addEventListener('click',function(){switchView('inquiryModal','form');});
     if(confirmBtn)confirmBtn.addEventListener('click',function(){
-      switchView('inquiryModal','sending');
+      switchView('inquiryModal','sending');var waWin=window.open('','_blank');
       var name=document.getElementById('iName').value.trim();
       var phone=document.getElementById('iPhone').value.trim();
       var subject=document.getElementById('iSubject').value.trim()||'استفسار عام';
@@ -506,7 +506,7 @@
         'موضوع الاستفسار: '+subject+'\n'+
         'الاستفسار: '+message;
       setTimeout(function(){
-        window.open(waLink(msg),'_blank');
+        if(waWin){waWin.location.href=waLink(msg);}else{window.open(waLink(msg),'_blank');}
         closeModal('inquiryModal');
       },5000);
     });
