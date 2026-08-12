@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+  <html lang="ar" dir="rtl">
+  <head>
+  <meta charset="UTF-8">
+  <title>مدى التسهيل للتجارة — فيديو تعريفي</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&family=Tajawal:wght@300;400;500;700&family=Space+Grotesk:wght@500;700&display=swap');
+  :root{
+        --navy-deep:#060d1c;
+    --navy:#0b1830;
+    --navy-soft:#132443;
+    --gold:#d4af37;
+          --gold-bright:#f4d374;
+          --white:#f7f7f5;
+          --slate:#9fb0c9;
+}
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{
+        height:100%;
+    width:100%;
+    background:#000;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:'Tajawal', sans-serif;
+    overflow:hidden;
+}
+  #shell{
+    display:flex; flex-direction:column; align-items:center; gap:8px;
+    width:100%; height:100%;
+    justify-content:center;
+}
+  #stage-wrap{
+    width:min(100%, 178vh);
+    max-height:92%;
+    aspect-ratio:16/9;
+    position:relative;
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 40px 100px rgba(0,0,0,.6), 0 0 0 1px rgba(212,175,55,.15);
+}
+  #stage{
+    position:absolute; inset:0;
+    background:
+          radial-gradient(120% 90% at 50% 20%, #0d1c38 0%, var(--navy) 45%, var(--navy-deep) 100%);
+}
+  #vignette{
+    position:absolute; inset:0; pointer-events:none;
+    background:radial-gradient(120% 100% at 50% 50%, transparent 55%, rgba(0,0,0,.55) 100%);
+    z-index:50;
+}
+  .orbit-ring{
+        position:absolute; border-radius:50%;
+    border:1.5px solid transparent;
+    border-top-color: var(--gold);
+    border-right-color: rgba(212,175,55,.5);
+    filter: drop-shadow(0 0 6px rgba(212,175,55,.5));
+    animation: spin 14s linear infinite;
+    opacity:.55;
+}
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+  .trail{
+        position:absolute; top:0; bottom:0; width:40%;
+    background:linear-gradient(90deg, transparent, rgba(244,211,116,.16), transparent);
+    transform:translateX(-120%) skewX(-12deg);
+    animation: sweep 6.5s ease-in-out infinite;
+    pointer-events:none; z-index:5;
+}
+  @keyframes sweep{
+        0%{ transform:translateX(-120%) skewX(-12deg); }
+    45%,100%{ transform:translateX(220%) skewX(-12deg); }
+}
+        .scene{
+              position:absolute; inset:0;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+          text-align:center; gap:clamp(10px,1.6vw,22px);
+    padding: 6% 8%;
+    opacity:0;
+          z-index:10;
+}
+  .eyebrow{
+        font-family:'Tajawal'; font-weight:500;
+    color:var(--gold-bright); font-size:clamp(11px,1.15vw,16px);
+    line-height:1.6; opacity:.9;
+}
+        h1,h2{
+              font-family:'Cairo'; color:var(--white); font-weight:800;
+    line-height:1.45;
+}
+  .glow-text{ text-shadow:0 0 24px rgba(212,175,55,.45); }
+  .logo-mark{
+    width: clamp(70px,10vw,150px);
+    filter: drop-shadow(0 0 30px rgba(212,175,55,.55));
+      }
+        .logo-mark.small{ width:clamp(34px,4.2vw,60px); }
+  .tagline{
+    font-family:'Tajawal'; font-weight:400; color:var(--slate);
+    font-size:clamp(12px,1.35vw,19px); line-height:1.6;
+      }
+  .brandrow{ display:flex; gap:clamp(12px,2.2vw,30px); flex-wrap:wrap; justify-content:center; }
+  .chip{
+        display:flex; flex-direction:column; align-items:center; gap:8px;
+    opacity:0; transform:translateY(14px) scale(.94);
+    }
+  .chip .mark{
+    width:clamp(52px,5.6vw,78px); height:clamp(52px,5.6vw,78px);
+          border-radius:16px;
+              background:linear-gradient(150deg, rgba(255,255,255,.09), rgba(212,175,55,.10));
+    border:1px solid rgba(212,175,55,.4);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 12px 28px rgba(0,0,0,.4), inset 0 0 14px rgba(212,175,55,.10);
+      }
+  .chip .mark svg{ width:52%; height:52%; }
+        .chip .mark svg *{ fill:none; stroke:var(--gold-bright); stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+  .chip .name{ font-family:'Space Grotesk','Cairo'; font-weight:700; color:var(--white); font-size:clamp(11px,1.15vw,15px); }
+  .iconrow{ display:flex; gap:clamp(14px,2.4vw,34px); flex-wrap:wrap; justify-content:center; max-width:80%; }
+  .icard{
+        display:flex; flex-direction:column; align-items:center; gap:8px;
+    opacity:0; transform:translateY(16px) scale(.9);
+  }
+  .icard .ico{
+    width:clamp(44px,5.2vw,74px); height:clamp(44px,5.2vw,74px);
+    border-radius:18px;
+    background:linear-gradient(145deg, rgba(212,175,55,.22), rgba(255,255,255,.04));
+    border:1px solid rgba(212,175,55,.4);
+    display:flex; align-items:center; justify-content:center;
+    font-size:clamp(18px,2.2vw,30px);
+    box-shadow:0 10px 30px rgba(0,0,0,.35), inset 0 0 12px rgba(212,175,55,.12);
+    animation: float 4s ease-in-out infinite;
+  }
+  .icard:nth-child(odd) .ico{ animation-delay:-1.4s; }
+  .icard span{ font-family:'Tajawal'; color:var(--slate); font-size:clamp(10px,1.05vw,14px); }
+  @keyframes float{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-8px);} }
+  .glasscard{
+        background:rgba(255,255,255,.05);
+    border:1px solid rgba(212,175,55,.3);
+    backdrop-filter:blur(10px);
+    border-radius:20px;
+    padding:clamp(18px,2.4vw,34px) clamp(24px,3.6vw,50px);
+    display:flex; flex-direction:column; gap:10px;
+}
+  .checklist{ display:flex; flex-direction:column; gap:8px; text-align:right; }
+  .checklist li{
+        list-style:none; font-family:'Tajawal'; color:var(--white); font-size:clamp(12px,1.4vw,18px);
+    display:flex; align-items:center; gap:10px; justify-content:flex-end;
+    opacity:0; transform:translateX(14px);
+  }
+  .checklist li::after{ content:'✦'; color:var(--gold); font-size:.8em; }
+  .statsrow{ display:flex; gap:clamp(16px,3vw,46px); flex-wrap:wrap; justify-content:center; }
+  .stat{ display:flex; flex-direction:column; align-items:center; gap:4px; opacity:0; transform:translateY(14px); }
+  .stat .num{
+    font-family:'Space Grotesk'; font-weight:700; color:var(--gold-bright);
+    font-size:clamp(24px,3.6vw,48px);
+    text-shadow:0 0 20px rgba(212,175,55,.5);
+  }
+  .stat .lab{ font-family:'Tajawal'; color:var(--slate); font-size:clamp(11px,1.1vw,15px); }
+  .cta-btn{
+        font-family:'Cairo'; font-weight:800; color:var(--navy-deep);
+    background:linear-gradient(120deg, var(--gold-bright), var(--gold));
+    padding:clamp(12px,1.6vw,20px) clamp(30px,4vw,54px);
+    border-radius:100px; font-size:clamp(14px,1.8vw,24px);
+    box-shadow:0 14px 40px rgba(212,175,55,.4);
+    opacity:0; transform:scale(.9);
+}
+  .contact-card{
+        display:flex; gap:clamp(16px,3vw,40px); flex-wrap:wrap; justify-content:center;
+    background:rgba(255,255,255,.05); border:1px solid rgba(212,175,55,.3);
+    backdrop-filter:blur(10px); border-radius:18px;
+    padding:clamp(14px,1.8vw,22px) clamp(24px,3vw,40px);
+    opacity:0;
+}
+  .contact-card div{
+        font-family:'Tajawal'; font-weight:500; color:var(--white); font-size:clamp(12px,1.35vw,18px);
+    display:flex; align-items:center; gap:10px; direction:ltr;
+}
+  .contact-card .badge{
+    width:clamp(24px,2.2vw,32px); height:clamp(24px,2.2vw,32px); border-radius:50%;
+    background:linear-gradient(145deg, var(--gold-bright), var(--gold));
+    display:flex; align-items:center; justify-content:center;
+    font-size:clamp(12px,1.3vw,17px); flex-shrink:0;
+  }
+  .copyright{ font-family:'Tajawal'; color:var(--slate); font-size:clamp(9px,.95vw,12px); opacity:0; }
+  #progress{
+    width:min(99%,178vh); height:3px; background:rgba(255,255,255,.08); border-radius:3px; overflow:hidden;
+}
+  #bar{ height:100%; width:0%; background:linear-gradient(90deg,var(--gold),var(--gold-bright)); }
+  #hint{ font-family:'Tajawal'; color:#5c6c85; font-size:10px; }
+</style>
+  </head>
+  <body>
+  <div id="shell">
+    <div id="stage-wrap">
+      <div id="stage"></div>
+      <div class="orbit-ring" style="width:46%;aspect-ratio:1;top:8%;left:50%;transform:translateX(-50%);"></div>
+      <div class="trail"></div>
+      <div id="vignette"></div>
+
+      <!-- Scene 1: Logo opener (logo alone, 4s) -->
+      <section class="scene" id="s1">
+        <img class="logo-mark" src="assets/logo.png" alt="شعار مدى التسهيل">
+        <h1 class="glow-text" style="font-size:clamp(20px,3.4vw,44px);">مدى التسهيل للتجارة</h1>
+        <div class="eyebrow" style="max-width:82%;">شركة مدى التسهيل للتجارة — شركة سعودية ذات مسؤولية محدودة — الرقم الوطني الموحد 7049529501</div>
+        <div class="tagline">نقرّب لك أحدث التقنية، ونُسهّل عليك الاختيار.</div>
+      </section>
+      <!-- Scene 2: Brand logos (7s) -->
+      <section class="scene" id="s2">
+        <h2 style="font-size:clamp(16px,2.4vw,30px);">أحدث الأجهزة والمنتجات التقنية</h2>
+        <div class="eyebrow">من أبرز العلامات التجارية العالمية</div>
+        <div class="brandrow" id="brandrow">
+          <div class="chip"><div class="mark"><svg viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2"/><line x1="10" y1="19" x2="14" y2="19"/></svg></div><div class="name">Apple</div></div>
+          <div class="chip"><div class="mark"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><line x1="9" y1="18.5" x2="15" y2="18.5"/></svg></div><div class="name">Samsung</div></div>
+          <div class="chip"><div class="mark"><svg viewBox="0 0 24 24"><path d="M3 16 L5 6 H19 L21 16 Z"/><line x1="2" y1="16" x2="22" y2="16"/><line x1="2" y1="19" x2="22" y2="19"/></svg></div><div class="name">Huawei</div></div>
+          <div class="chip"><div class="mark"><svg viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2"/><line x1="7" y1="6" x2="17" y2="6"/></svg></div><div class="name">OnePlus</div></div>
+          <div class="chip"><div class="mark"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6"/><line x1="12" y1="3" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="21"/></svg></div><div class="name">Xiaomi</div></div>
+          <div class="chip"><div class="mark"><svg viewBox="0 0 24 24"><circle cx="8" cy="10" r="3.2"/><circle cx="16" cy="10" r="3.2"/><path d="M6 12 v4 a2 2 0 0 0 4 0 v-3"/><path d="M18 12 v4 a2 2 0 0 1-4 0 v-3"/></svg></div><div class="name">OPPO</div></div>
+        </div>
+        <div class="eyebrow" id="othermarks" style="opacity:0; transform:translateY(10px);">والعلامات التجارية الأخرى</div>
+        <div class="tagline">علامات عالمية… وخيارات تناسبك.</div>
+      </section>
+      <!-- Scene 3: Categories -->
+      <section class="scene" id="s3">
+        <h2 style="font-size:clamp(16px,2.4vw,30px);">كل ما تبحث عنه في عالم التقنية</h2>
+        <div class="iconrow" id="iconrow">
+          <div class="icard"><div class="ico">📱</div><span>الهواتف الذكية</span></div>
+          <div class="icard"><div class="ico">💻</div><span>اللابتوبات</span></div>
+          <div class="icard"><div class="ico">🖥️</div><span>الأجهزة اللوحية</span></div>
+          <div class="icard"><div class="ico">🎮</div><span>أجهزة الألعاب</span></div>
+          <div class="icard"><div class="ico">⌚</div><span>الساعات الذكية</span></div>
+          <div class="icard"><div class="ico">🎧</div><span>الصوتيات</span></div>
+          <div class="icard"><div class="ico">🔌</div><span>الإكسسوارات</span></div>
+        </div>
+      </section>
+      <!-- Scene 4: Experience -->
+      <section class="scene" id="s4">
+        <h2 class="glow-text" style="font-size:clamp(18px,2.8vw,34px);">اختر بثقة</h2>
+        <div class="glasscard">
+          <ul class="checklist" id="checklist">
+            <li>معلومات واضحة</li>
+            <li>مواصفات دقيقة</li>
+            <li>خيارات متنوعة</li>
+            <li>أحدث الإصدارات</li>
+          </ul>
+        </div>
+        <div class="tagline">لأن اختيارك للتقنية يستحق أن يكون أسهل.</div>
+      </section>
+      <!-- Scene 5: Stats -->
+      <section class="scene" id="s5">
+        <h2 style="font-size:clamp(16px,2.4vw,30px);">أرقامنا تتحدث عن ثقتكم</h2>
+        <div class="statsrow" id="statsrow">
+          <div class="stat"><div class="num" data-target="5000" data-suffix="+">0</div><div class="lab">عميل</div></div>
+          <div class="stat"><div class="num" data-target="200" data-suffix="+">0</div><div class="lab">منتج</div></div>
+          <div class="stat"><div class="num" data-target="100" data-suffix="+">0</div><div class="lab">علامة تجارية</div></div>
+          <div class="stat"><div class="num" data-target="99.99" data-suffix="%" data-decimals="2">0</div><div class="lab">رضا العملاء</div></div>
+          <div class="stat"><div class="num" data-target="30" data-suffix="+">0</div><div class="lab">خدمة متاحة</div></div>
+        </div>
+      </section>
+      <!-- Scene 6: Vision -->
+      <section class="scene" id="s6">
+        <h2 class="glow-text" style="font-size:clamp(18px,2.8vw,34px);">نواكب الأحدث</h2>
+        <div class="tagline" style="font-size:clamp(13px,1.6vw,22px);">نبحث عن الجديد، ونوسّع خياراتنا، ونطوّر تجربتك باستمرار.</div>
+        <div class="eyebrow" style="font-size:clamp(13px,1.5vw,20px);">اليوم أسهل… وغدًا أكثر تطورًا.</div>
+      </section>
+      <!-- Scene 7: About -->
+      <section class="scene" id="s7">
+        <h2 style="font-size:clamp(17px,2.6vw,32px);">مدى التسهيل للتجارة</h2>
+        <div class="tagline" style="max-width:70%; font-size:clamp(11px,1.3vw,17px);">
+          شركة سعودية ذات مسؤولية محدودة، متخصصة في توفير أحدث الأجهزة والمنتجات التقنية من أبرز العلامات التجارية العالمية، مع تجربة رقمية سهلة لاستعراض المنتجات والتعرّف على المواصفات وطلب التسعيرة.
+        </div>
+      </section>
+      <!-- Scene 8: Final CTA -->
+      <section class="scene" id="s8">
+        <h2 class="glow-text" style="font-size:clamp(17px,2.6vw,32px); max-width:80%;">تبحث عن جهاز بمواصفات خاصة؟ أو تريد معرفة السعر؟</h2>
+        <div class="cta-btn" id="ctabtn">اطلب تسعيرتك الآن</div>
+        <div class="contact-card" id="contactrow">
+          <div><span class="badge">🟢</span>0573623150</div>
+          <div><span class="badge">✉️</span>support@madaltashil.com</div>
+        </div>
+      </section>
+      <!-- Scene 9: Ending -->
+      <section class="scene" id="s9">
+        <img class="logo-mark" src="assets/logo.png" alt="شعار مدى التسهيل">
+        <h1 class="glow-text" style="font-size:clamp(19px,3.2vw,40px);">مدى التسهيل للتجارة</h1>
+        <div class="tagline">نقرّب لك أحدث التقنية، ونُسهّل عليك الاختيار.</div>
+        <div class="copyright" id="copyright">© 2026 شركة مدى التسهيل للتجارة — جميع الحقوق محفوظة</div>
+      </section>
+    </div>
+    <div id="progress"><div id="bar"></div></div>
+    <div id="hint">نسخة أولية متحركة — تعمل داخل المتصفح، تُستخدم كمرجع بصري أو للتسجيل الشاشي</div>
+  </div>
+  <script>
+  // Sequential, non-overlapping timeline — each scene 7-9s (scene 1 = 4s, logo only).
+  const scenes = [
+{id:'s1', start:0,  dur:4},
+  {id:'s2', start:4,  dur:7},
+  {id:'s3', start:11, dur:8},
+  {id:'s4', start:19, dur:8},
+  {id:'s5', start:27, dur:9},
+  {id:'s6', start:36, dur:7},
+  {id:'s7', start:43, dur:8},
+  {id:'s8', start:51, dur:9},
+  {id:'s9', start:60, dur:8},
+  ];
+const TOTAL = 68.0;
+function styleScene(sc){
+    const el = document.getElementById(sc.id);
+  el.style.animation = `sceneShow ${sc.dur}s ease-in-out ${sc.start}s 1 both`;
+}
+const styleSheet = document.createElement('style');
+styleSheet.textContent = `
+  @keyframes sceneShow{
+    0%{ opacity:0; transform:translateY(10px) scale(.98); }
+  14%{ opacity:1; transform:translateY(0) scale(1); }
+  86%{ opacity:1; transform:translateY(0) scale(1); }
+  100%{ opacity:0; transform:translateY(-8px) scale(1.01); }
+}`;
+document.head.appendChild(styleSheet);
+scenes.forEach(styleScene);
+function stagger(selector, baseDelay, gap, sceneStart){
+    document.querySelectorAll(selector).forEach((el,i)=>{
+    const d = sceneStart + baseDelay + i*gap;
+    el.style.animation = `chipIn .6s ease-out ${d}s 1 both`;
+});
+}
+const kf2 = document.createElement('style');
+kf2.textContent = `@keyframes chipIn{ to{ opacity:1; transform:translateY(0) scale(1); } }`;
+document.head.appendChild(kf2);
+stagger('#brandrow .chip', 0.6, 0.22, scenes[1].start);
+stagger('#othermarks', 2.3, 0, scenes[1].start);
+stagger('#iconrow .icard', 0.5, 0.18, scenes[2].start);
+stagger('#checklist li', 0.6, 0.22, scenes[3].start);
+stagger('#statsrow .stat', 0.4, 0.22, scenes[4].start);
+stagger('#ctabtn', 0.5, 0, scenes[7].start);
+stagger('#contactrow', 1.3, 0, scenes[7].start);
+stagger('#copyright', 1.6, 0, scenes[8].start);
+function animateCounters(){
+  document.querySelectorAll('.num').forEach(num=>{
+    const target = parseFloat(num.dataset.target);
+    const decimals = parseInt(num.dataset.decimals||"0");
+    const suffix = num.dataset.suffix||"";
+    let startTime = null;
+    const dur = 1600;
+    function step(ts){
+      if(!startTime) startTime = ts;
+      const p = Math.min((ts-startTime)/dur, 1);
+      const val = target * p;
+      num.textContent = val.toFixed(decimals) + suffix;
+      if(p<1) requestAnimationFrame(step);
+      else num.textContent = target.toFixed(decimals) + suffix;
+}
+    requestAnimationFrame(step);
+});
+}
+let loopStart = performance.now();
+function tick(ts){
+  const elapsed = ((ts - loopStart)/1000) % TOTAL;
+  document.getElementById('bar').style.width = (elapsed/TOTAL*100)+'%';
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+setTimeout(animateCounters, scenes[4].start*1000 + 500);
+setInterval(()=>{ animateCounters(); }, TOTAL*1000);
+</script>
+</body>
+</html>
