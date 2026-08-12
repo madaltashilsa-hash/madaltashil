@@ -31,11 +31,6 @@
 <header id="site-header">
 <div class="header-inner">
 <a href="#home" class="header-logo"><img src="assets/logo-full-light.png" alt="مدى التسهيل للتجارة"></a>
-<div class="header-search">
-<input type="text" id="searchInput" placeholder="ابحث عن منتج أو شركة أو موديل...">
-<span class="search-icon" data-icon="search" style="width:18px;height:18px;color:#fff;display:inline-flex"></span>
-<div class="search-results" id="searchResults"></div>
-</div>
 <button id="menuToggle" class="menu-toggle" aria-label="فتح القائمة"><span></span><span></span><span></span></button>
 </div>
 </header>
@@ -60,20 +55,6 @@
 <li><a class="nav-child-link" href="#stats"><span class="icon-3d" data-icon="analytics"></span><span>أرقامنا</span></a></li>
 </ul>
 </li>
-<li class="nav-item has-children">
-<a class="nav-link" href="#"><span class="icon-3d" data-icon="desktop"></span><span>المنتجات</span><span class="chev">⌄</span></a>
-<ul class="nav-children">
-<li><a class="nav-child-link" href="#products"><span class="icon-3d" data-icon="smartphone"></span><span>الجوالات</span></a></li>
-<li><a class="nav-child-link" href="#products"><span class="icon-3d" data-icon="laptop"></span><span>اللابتوبات</span></a></li>
-<li><a class="nav-child-link" href="#products"><span class="icon-3d" data-icon="tablet"></span><span>الأجهزة اللوحية</span></a></li>
-<li><a class="nav-child-link" href="#products"><span class="icon-3d" data-icon="gamepad"></span><span>أجهزة الألعاب</span></a></li>
-<li><a class="nav-child-link" href="#products"><span class="icon-3d" data-icon="watch"></span><span>الساعات والأجهزة القابلة للارتداء</span></a></li>
-<li><a class="nav-child-link" href="#products"><span class="icon-3d" data-icon="headphones"></span><span>الصوتيات</span></a></li>
-<li><a class="nav-child-link" href="#products"><span class="icon-3d" data-icon="accessory"></span><span>الإكسسوارات</span></a></li>
-<li><a class="nav-child-link" href="#products"><span class="icon-3d" data-icon="desktop"></span><span>أجهزة الكمبيوتر</span></a></li>
-<li><a class="nav-child-link" href="#products"><span class="icon-3d" data-icon="network"></span><span>أجهزة الشبكات</span></a></li>
-</ul>
-</li>
 <li class="nav-item"><a class="nav-link" href="#special"><span class="icon-3d" data-icon="magic"></span><span>طلب خاص</span></a></li>
 </ul>
 </nav>
@@ -85,7 +66,7 @@
 <h1 class="hero-title">نقرّب لك <span>أحدث التقنية</span></h1>
 <p class="hero-text">تسهيل اليوم .. نجاح الغد — اكتشف أحدث الأجهزة والمنتجات التقنية من أبرز العلامات التجارية العالمية، واطلب تسعيرتك بكل سهولة.</p>
 <div class="hero-actions">
-<a href="#products" class="btn btn-gold">استكشف المنتجات</a>
+<a href="#eligibility" class="btn btn-gold">تحقق من أهليتك</a>
 <button class="btn btn-outline-light" data-open-inquiry type="button">تواصل معنا</button>
 </div>
 </div>
@@ -175,30 +156,6 @@
 <p class="stats-outro reveal">«أكثر من أرقام... إنها ثقة تتجدد. خيارات أكثر، علامات تجارية أكثر، وتجربة أسهل. ومع كل عميل، نواصل التطور لنكون أقرب لاحتياجاتكم.»</p>
 </div>
 </section>
-<section id="products" class="section">
-<div class="container">
-<div class="section-head reveal">
-<span class="eyebrow">منتجاتنا</span>
-<h2 class="section-title">أحدث المنتجات</h2>
-<p class="section-subtitle">اكتشف أحدث الأجهزة والمنتجات التقنية من أشهر العلامات التجارية.</p>
-</div>
-<div class="category-tabs reveal" id="categoryTabs">
-<button class="category-tab active" data-cat="all">الكل</button>
-<button class="category-tab" data-cat="phones">الجوالات</button>
-<button class="category-tab" data-cat="laptops">اللابتوبات</button>
-<button class="category-tab" data-cat="tablets">الأجهزة اللوحية</button>
-<button class="category-tab" data-cat="gaming">أجهزة الألعاب</button>
-<button class="category-tab" data-cat="wearables">الساعات والأجهزة القابلة للارتداء</button>
-<button class="category-tab" data-cat="audio">الصوتيات</button>
-<button class="category-tab" data-cat="accessories">الإكسسوارات</button>
-<button class="category-tab" data-cat="computers">أجهزة الكمبيوتر</button>
-<button class="category-tab" data-cat="networking">أجهزة الشبكات</button>
-</div>
-<div class="brand-filter" id="brandFilter"></div>
-<div class="products-grid" id="productsGrid"></div>
-</div>
-</section>
-
 <section id="special" class="section section-alt">
 <div class="container">
 <div class="special-card reveal">
@@ -246,39 +203,6 @@
 </div>
 </footer>
 <button id="fabWhatsapp" class="fab-whatsapp" data-open-inquiry type="button" aria-label="تواصل عبر واتساب"><span data-icon="whatsapp"></span></button>
-<div class="modal-overlay" id="detailsModal">
-<div class="modal-box wide">
-<div class="modal-header"><h3 id="detailsTitle">تفاصيل المنتج</h3><button class="modal-close" data-close="detailsModal">×</button></div>
-<div class="modal-body" id="detailsBody"></div>
-<div class="modal-body" style="padding-top:0">
-<button class="btn btn-quote" id="detailsQuoteBtn" style="width:100%;justify-content:center"><span data-icon="whatsapp" style="width:16px;height:16px;display:inline-flex"></span> اطلب تسعيرة</button>
-</div>
-</div>
-</div>
-
-<div class="modal-overlay" id="quoteModal">
-<div class="modal-box">
-<div class="modal-header"><h3>طلب تسعيرة المنتج</h3><button class="modal-close" data-close="quoteModal">×</button></div>
-<div class="modal-body">
-<div class="modal-view active" data-view="form">
-<div class="request-summary" id="quoteSummary"></div>
-<div class="form-group"><label>الاسم</label><input type="text" id="qName"></div>
-<div class="form-group"><label>رقم الجوال</label><input type="tel" id="qPhone"></div>
-<div class="form-group"><label>الكمية</label><input type="number" id="qQty" value="1" min="1"></div>
-<div class="form-group"><label>ملاحظات</label><textarea id="qNotes"></textarea></div>
-<div class="modal-actions"><button class="btn btn-gold" id="qSubmit" type="button">إرسال الطلب</button><button class="btn btn-outline-navy" data-close="quoteModal" type="button">إلغاء</button></div>
-</div>
-<div class="modal-view" data-view="confirm">
-<div class="confirm-view"><p>هل أنت متأكد من إرسال طلب التسعيرة؟</p>
-<div class="modal-actions"><button class="btn btn-gold" id="qConfirm" type="button">تأكيد الإرسال</button><button class="btn btn-outline-navy" id="qCancelConfirm" type="button">إلغاء</button></div></div>
-</div>
-<div class="modal-view" data-view="sending">
-<div class="sending-view"><img src="assets/logo.png" alt="مدى التسهيل"><h4>جاري إرسال طلبك...</h4><p>نجهز طلبك للتواصل عبر واتساب</p><div class="spinner"></div></div>
-</div>
-</div>
-</div>
-</div>
-
 <div class="modal-overlay" id="inquiryModal">
 <div class="modal-box">
 <div class="modal-header"><h3>استفسار</h3><button class="modal-close" data-close="inquiryModal">×</button></div>
