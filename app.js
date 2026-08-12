@@ -550,9 +550,9 @@ elig.basic={name:'',phone:'',email:'',city:'',age:''};
 elig.job={status:'',title:'',sector:''};
 elig.fin={sources:[],income:'',hasObligations:'',obligationsValue:'',hasExtraIncome:'',extraIncomeValue:'',extraIncomeSource:'',salaryDeposit:''};
 elig.gen={hasHold:'',holdTypes:[],hadHold:'',hadTypes:[]};
-elig.prod={value:'',type:'',brand:'',specs:'',color:'',imageName:''};
+elig.prod={value:'',type:'',brand:'',specs:'',color:'',name:'',images:[]};
 }
-function escAttr(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function escAttr(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}function renderImgPreview(){var list=document.getElementById('elgProdImagesList');if(!list)return;var files=elig.prod.images||[];if(files.length===0){list.innerHTML='';return;}var html='';for(var i=0;i<files.length;i++){html+='<span class="img-preview-chip"><b>'+(i+1)+'.</b> '+escAttr(files[i].name)+'</span>';}list.innerHTML=html;}
 function val(id){var e=document.getElementById(id);return e?e.value.trim():'';}
 function setFieldError(id,msg){
 var el=document.getElementById(id);if(!el)return;
@@ -677,10 +677,10 @@ typeOpts+='<option value="'+PRODUCT_TYPES[i].v+'"'+(p.type===PRODUCT_TYPES[i].v?
 }
 return ''
 +'<div class="form-group"><label>نوع المنتج</label><select id="elgProdType">'+typeOpts+'</select><span class="field-error-msg"></span></div>'
-+'<div class="form-group"><label>الشركة / العلامة التجارية</label><input type="text" id="elgProdBrand" placeholder="مثال: Apple، Samsung" value="'+escAttr(p.brand)+'"></div>'
-+'<div class="form-group"><label>المواصفات المطلوبة</label><textarea id="elgProdSpecs" placeholder="مثال: 256GB، رام 8GB">'+escAttr(p.specs)+'</textarea></div>'
-+'<div class="form-group"><label>اللون المطلوب</label><input type="text" id="elgProdColor" placeholder="مثال: أسود، فضي" value="'+escAttr(p.color)+'"></div>'
-+'<div class="form-group"><label>صورة للمنتج (اختياري)</label><input type="file" id="elgProdImage" accept="image/*"><span style="font-size:11.5px;color:var(--ink-soft);display:block;margin-top:6px">يفضل إرسال الصورة يدويًا عبر واتساب بعد إرسال الطلب.</span></div>'
++'<div class="form-group"><label>اسم المنتج</label><input type="text" id="elgProdName" placeholder="مثال: آيفون 17 برو" value="'+escAttr(p.name)+'"><span class="field-error-msg"></span></div>'+'<div class="form-group"><label>الشركة المصنعة / العلامة التجارية</label><input type="text" id="elgProdBrand" placeholder="مثال: Apple، Samsung" value="'+escAttr(p.brand)+'"></div>'
++'<div class="form-group"><label>مواصفات المنتج</label><textarea id="elgProdSpecs" placeholder="مثال: 256GB، رام 8GB">'+escAttr(p.specs)+'</textarea></div>'
++'<div class="form-group"><label>لون المنتج</label><input type="text" id="elgProdColor" placeholder="مثال: أسود، فضي" value="'+escAttr(p.color)+'"></div>'
++'<div class="form-group"><label>إرفاق صور المنتج (حد أقصى 5 صور)</label><input type="file" id="elgProdImages" accept="image/*" multiple><div class="img-preview-list" id="elgProdImagesList"></div><span class="field-error-msg"></span><span class="img-count-hint">يفضل أيضًا إرسال الصور يدويًا عبر واتساب بعد إرسال الطلب لضمان استلامها بجودة كاملة.</span></div>'
 +'<div class="form-group"><label>قيمة المنتج (500 - 30,000 ريال)</label>'
 +'<div class="range-row"><input type="range" id="elgProdValue" min="500" max="30000" step="100" value="'+v+'"><span class="range-value" id="elgProdValueOut">'+v+' ريال</span></div>'
 +'<div class="range-limits"><span>500 ريال</span><span>30,000 ريال</span></div>'
@@ -731,10 +731,10 @@ if(elig.locked&&elig.product){
 html+=reviewRow('العلامة التجارية',elig.product.brand)+reviewRow('اسم المنتج',elig.product.name)+reviewRow('الموديل',elig.product.model);
 }else{
 html+=reviewRow('نوع المنتج',productTypeLabel(p.type));
-if(p.brand)html+=reviewRow('الشركة / العلامة التجارية',p.brand);
-if(p.color)html+=reviewRow('اللون المطلوب',p.color);
-if(p.specs)html+=reviewRow('المواصفات المطلوبة',p.specs);
-if(p.imageName)html+=reviewRow('صورة مرفقة',p.imageName);
+if(p.brand)html+=reviewRow('الشركة المصنعة',p.brand);
+if(p.color)html+=reviewRow('لون المنتج',p.color);
+if(p.specs)html+=reviewRow('مواصفات المنتج',p.specs);
+if(p.name)html+=reviewRow('اسم المنتج',p.name);if(p.images&&p.images.length)html+=reviewRow('عدد الصور المرفقة',p.images.length+' صورة');
 }
 html+=reviewRow('قيمة المنتج المطلوبة',(p.value?p.value+' ريال':'—'));
 html+='</div>';
@@ -848,7 +848,7 @@ var out=document.getElementById('elgProdValueOut');
 if(out)out.textContent=this.value+' ريال';
 });
 var typeSel=document.getElementById('elgProdType');
-if(typeSel)typeSel.addEventListener('change',function(){elig.prod.type=this.value;});
+if(typeSel)typeSel.addEventListener('change',function(){elig.prod.type=this.value;});var nameInp=document.getElementById('elgProdName');if(nameInp)nameInp.addEventListener('input',function(){elig.prod.name=this.value;});var imgsInp=document.getElementById('elgProdImages');if(imgsInp)imgsInp.addEventListener('change',function(){var files=Array.prototype.slice.call(this.files||[]);if(files.length>5){alert('يمكنك إرفاق 5 صور كحد أقصى');files=files.slice(0,5);}elig.prod.images=files;renderImgPreview();});renderImgPreview();
 }
 function saveCurrentStage(){
 var step=elig.step;
@@ -859,7 +859,7 @@ elig.job.status=val('elgJobStatus');elig.job.title=val('elgJobTitle');elig.job.s
 }else if(step===3){
 elig.fin.income=val('elgIncome');elig.fin.obligationsValue=val('elgObligValue');elig.fin.extraIncomeValue=val('elgExtraValue');elig.fin.extraIncomeSource=val('elgExtraSource');elig.fin.salaryDeposit=val('elgSalaryDeposit');
 }else if(step===5){
-elig.prod.value=val('elgProdValue')||elig.prod.value;if(!elig.locked){elig.prod.type=val('elgProdType');elig.prod.brand=val('elgProdBrand');elig.prod.specs=val('elgProdSpecs');elig.prod.color=val('elgProdColor');var elgImgEl=document.getElementById('elgProdImage');elig.prod.imageName=(elgImgEl&&elgImgEl.files&&elgImgEl.files[0])?elgImgEl.files[0].name:elig.prod.imageName;}
+elig.prod.value=val('elgProdValue')||elig.prod.value;if(!elig.locked){elig.prod.type=val('elgProdType');elig.prod.name=val('elgProdName');elig.prod.brand=val('elgProdBrand');elig.prod.specs=val('elgProdSpecs');elig.prod.color=val('elgProdColor');}
 }
 }
 function validateCurrentStage(){
@@ -898,7 +898,7 @@ if(elig.gen.hasHold==='yes'&&elig.gen.holdTypes.length===0){ok=false;alert('ير
 if(!elig.gen.hadHold){ok=false;alert('يرجى تحديد إذا سبق إيقاف خدماتكم');}
 if(elig.gen.hadHold==='yes'&&elig.gen.hadTypes.length===0){ok=false;alert('يرجى تحديد نوع إيقاف الخدمات السابق');}
 }else if(step===5){
-if(!elig.locked&&!val('elgProdType')){setFieldError('elgProdType','يرجى اختيار نوع المنتج');ok=false;}
+if(!elig.locked&&!val('elgProdType')){setFieldError('elgProdType','يرجى اختيار نوع المنتج');ok=false;}if(!elig.locked&&!val('elgProdName')){setFieldError('elgProdName','يرجى إدخال اسم المنتج');ok=false;}
 }
 return ok;
 }
@@ -980,11 +980,11 @@ if(g.hadHold==='yes')lines.push('نوع إيقاف الخدمات السابق: 
 lines.push('');
 lines.push('== معلومات المنتج ==');
 if(!(elig.locked&&elig.product)){
-lines.push('نوع المنتج: '+productTypeLabel(p.type));
-if(p.brand)lines.push('الشركة / العلامة التجارية: '+p.brand);
-if(p.color)lines.push('اللون المطلوب: '+p.color);
-if(p.specs)lines.push('المواصفات المطلوبة: '+p.specs);
-if(p.imageName)lines.push('ملاحظة: يوجد صورة مرفقة للمنتج ('+p.imageName+') - يرجى إرسالها يدويًا عبر واتساب');
+lines.push('اسم المنتج: '+(p.name||'—'));lines.push('نوع المنتج: '+productTypeLabel(p.type));
+if(p.brand)lines.push('الشركة المصنعة: '+p.brand);
+if(p.color)lines.push('لون المنتج: '+p.color);
+if(p.specs)lines.push('مواصفات المنتج: '+p.specs);
+if(p.images&&p.images.length)lines.push('ملاحظة: يوجد '+p.images.length+' صورة مرفقة للمنتج - يرجى إرسالها يدويًا عبر واتساب');
 }
 lines.push('قيمة المنتج المطلوبة: '+(p.value?p.value+' ريال':'—'));
 return lines.join('\n');
@@ -1070,7 +1070,7 @@ var crHtml=''
 +'<div class="form-group"><label>نوع المنتج</label><select id="crType"><option value="">اختر نوع المنتج</option><option value="phones">جوالات</option><option value="electronics">منتجات إلكترونية</option></select></div>'
 +'<div class="form-group"><label>العلامة التجارية المطلوبة</label><input type="text" id="crBrand"></div>'
 +'<div class="form-group"><label>الموديل المطلوب</label><input type="text" id="crModel"></div>'
-+'<div class="form-group"><label>المواصفات المطلوبة</label><textarea id="crSpecs"></textarea></div>'
++'<div class="form-group"><label>مواصفات المنتج</label><textarea id="crSpecs"></textarea></div>'
 +'<div class="form-group"><label>الكمية</label><input type="number" id="crQty" value="1" min="1"></div>'
 +'<div class="form-group"><label>الميزانية التقريبية (اختياري)</label><input type="number" id="crBudget"></div>'
 +'<div class="form-group"><label>ملاحظات</label><textarea id="crNotes"></textarea></div>'
@@ -1136,7 +1136,7 @@ lines.push('البريد الإلكتروني: '+email);
 lines.push('نوع المنتج: '+type);
 lines.push('العلامة التجارية المطلوبة: '+brand);
 lines.push('الموديل المطلوب: '+model);
-lines.push('المواصفات المطلوبة: '+specs);
+lines.push('مواصفات المنتج: '+specs);
 lines.push('الكمية: '+qty);
 lines.push('الميزانية التقريبية: '+budget);
 lines.push('ملاحظات: '+notes);
