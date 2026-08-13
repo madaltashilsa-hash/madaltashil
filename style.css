@@ -143,6 +143,11 @@ h1,h2,h3,h4,p{margin:0}
 .about-card h3{font-size:20px;font-weight:800;color:var(--navy);margin-bottom:12px}
 .about-card p{color:var(--ink-soft);line-height:1.9;font-size:15px}
 .about-quote{margin-top:16px;color:var(--gold);font-weight:700;font-size:14px;border-right:3px solid var(--gold);padding-right:12px}
+.about-teaser{background:#fff;border-radius:var(--radius-lg);padding:44px 36px;box-shadow:var(--shadow-soft);max-width:720px;margin:10px auto 0;text-align:center}
+.about-teaser .icon-3d{width:64px;height:64px;margin:0 auto 20px}
+.about-teaser .icon-3d svg{width:32px;height:32px}
+.about-teaser h3{font-size:22px;font-weight:800;color:var(--navy);margin-bottom:14px}
+.about-teaser p{color:var(--ink-soft);line-height:1.9;font-size:15px;margin-bottom:26px}
 .goals-list{display:flex;flex-direction:column;gap:14px;margin-top:8px}
 .goal-item{display:flex;align-items:center;gap:16px;background:#fff;border-radius:16px;padding:16px 20px;box-shadow:var(--shadow-soft)}
 .goal-num{font-size:22px;font-weight:800;color:var(--gold);flex:none;width:44px}
@@ -378,7 +383,8 @@ footer{background:linear-gradient(180deg,var(--navy),#081222);color:#fff;padding
 .toast-item{background:var(--navy);color:#fff;font-size:13px;font-weight:700;padding:12px 20px;border-radius:50px;box-shadow:var(--shadow-strong);opacity:1;transform:translateY(0);transition:opacity .35s var(--ease),transform .35s var(--ease);max-width:92vw;text-align:center}
 .toast-item.hide{opacity:0;transform:translateY(10px)}
 @media (max-width:640px){
-.elig-flow{grid-template-columns:1fr}
+.elig-flow{grid-template-columns:repeat(2,1fr);gap:12px}
+.elig-flow-card{padding:18px 10px}
 .range-value{min-width:auto}
 .modal-overlay{padding:10px}
 .modal-header{padding:16px 16px}
