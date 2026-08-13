@@ -10,14 +10,14 @@
   <style>
     :root{
       --navy:#0B1C33;--navy-2:#122A4D;--navy-3:#1C3A63;
-      --gold:#C9A227;--gold-light:#E9CE7A;
+      --gold:#2F6FED;--gold-light:#7FB2FF;
       --ink-soft:rgba(255,255,255,.78);
       --ease-bounce:cubic-bezier(.34,1.56,.64,1);
     }
     *{box-sizing:border-box}
     html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;font-family:'Tajawal',Tahoma,Arial,sans-serif;background:var(--navy)}
     #shell{position:relative;width:100%;height:100%;background:radial-gradient(circle at 30% 20%,var(--navy-3),var(--navy) 65%);overflow:hidden;color:#fff}
-    #shell::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 80% 85%,rgba(201,162,39,.18),transparent 60%);pointer-events:none}
+    #shell::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 80% 85%,rgba(47,111,237,.18),transparent 60%);pointer-events:none}
     #stage{position:absolute;inset:0}
     .scene{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(10px,2.2vh,22px);padding:clamp(16px,5vw,48px);text-align:center;opacity:0;visibility:hidden;transition:opacity .5s ease}
     .scene.active{opacity:1;visibility:visible}
@@ -97,7 +97,7 @@
       <div id="stage">
 
         <section class="scene" id="s1">
-          <img class="logo-icon sc-el" style="--i:0" src="assets/image.png" alt="مدى التسهيل للتجارة">
+          <img class="logo-icon sc-el" style="--i:0" src="assets/icon-white.png" alt="مدى التسهيل للتجارة">
           <h1 class="title sc-el" style="--i:1">مدى التسهيل للتجارة</h1>
           <div class="tagline sc-el" style="--i:2">تسهيل اليوم .. نجاح الغد</div>
         </section>
@@ -170,7 +170,7 @@
         </section>
       
       <section class="scene" id="s9">
-      <img class="logo-icon sc-el" style="--i:0" src="assets/image.png" alt="مدى التسهيل للتجارة">
+      <img class="logo-icon sc-el" style="--i:0" src="assets/icon-white.png" alt="مدى التسهيل للتجارة">
       <h2 class="title sc-el" style="--i:1">مدى التسهيل للتجارة</h2>
       <div class="tagline sc-el" style="--i:2">© 2026 جميع الحقوق محفوظة</div>
       </section>
