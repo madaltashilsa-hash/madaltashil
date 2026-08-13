@@ -1012,8 +1012,6 @@ openModal('chooserModal');
 function initChooserFlow(){
 var fab=document.getElementById('fabWhatsapp');
 if(fab){fab.removeAttribute('data-open-inquiry');fab.addEventListener('click',function(){openChooser();});}
-var specialBtn=document.querySelector('#special .special-card button[data-open-inquiry]');
-if(specialBtn){specialBtn.removeAttribute('data-open-inquiry');specialBtn.addEventListener('click',function(){openCustomRequest();});}
 var eb=document.getElementById('chooserEligBtn');
 if(eb)eb.addEventListener('click',function(){closeModal('chooserModal');openEligibility();});
 var cb=document.getElementById('chooserCustomBtn');
