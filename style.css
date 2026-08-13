@@ -167,10 +167,22 @@ h1,h2,h3,h4,p{margin:0}
 .google-rating-positive{display:flex;flex-direction:column;align-items:center;gap:4px;padding:0 30px;border-inline:1px dashed var(--line);position:relative}
 .google-rating-positive-value{font-size:30px;font-weight:800;color:var(--gold)}
 .google-rating-positive-label{font-size:12.5px;color:var(--ink-soft);font-weight:700}
-.google-rating-link{white-space:nowrap;position:relative}
+.testimonial-grid{margin-top:30px;display:flex;justify-content:center}
+.testimonial-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow-soft);padding:36px 38px 30px;max-width:560px;width:100%;position:relative;transition:transform .35s var(--ease),box-shadow .35s var(--ease)}
+.testimonial-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-strong)}
+.testimonial-quote{position:absolute;top:10px;inset-inline-start:26px;font-size:64px;font-weight:800;color:rgba(201,162,39,.2);line-height:1;font-family:Georgia,serif}
+.testimonial-text{font-size:16.5px;color:var(--ink);line-height:1.9;font-weight:700;position:relative;margin-bottom:22px}
+.testimonial-footer{display:flex;align-items:center;gap:12px}
+.testimonial-avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--gold-light),var(--gold));color:var(--navy);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;flex:none}
+.testimonial-meta{display:flex;flex-direction:column;gap:3px}
+.testimonial-name{font-weight:700;font-size:14px;color:var(--navy)}
+.testimonial-stars{color:var(--gold);font-size:12px;letter-spacing:2px}
+.testimonial-source{margin-inline-start:auto;display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-soft);font-weight:600;flex:none}
 @media (max-width:640px){
 .google-rating-card{padding:32px 20px;gap:20px}
 .google-rating-positive{border-inline:none;border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);padding:14px 0}
+.testimonial-card{padding:30px 24px 26px}
+.testimonial-quote{font-size:52px;top:6px;inset-inline-start:18px}
 }
 footer{background:linear-gradient(180deg,var(--navy),#081222);color:#fff;padding:80px 0 30px}
 .footer-inner{text-align:center;max-width:720px;margin:0 auto 50px}
