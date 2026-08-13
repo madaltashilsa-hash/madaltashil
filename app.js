@@ -1,7 +1,7 @@
 /* مدى التسهيل للتجارة - app.js */
 (function(){
 "use strict";
-var WA_NUMBER="966573623150";
+var WA_NUMBER="966556280382";
 function waLink(text){return "https://wa.me/"+WA_NUMBER+"?text="+encodeURIComponent(text);}
 var ICONS={
 home:'<path d="M4 11L12 4l8 7"/><path d="M6 10v9h5v-5h2v5h5v-9"/>',
@@ -240,11 +240,16 @@ var PRODUCT_TYPES=[
 {v:'phones',l:'جوالات'},
 {v:'electronics',l:'منتجات إلكترونية'}
 ];
+var SAUDI_REGIONS=[
+'منطقة الرياض','منطقة مكة المكرمة','منطقة المدينة المنورة','المنطقة الشرقية','منطقة القصيم',
+'منطقة عسير','منطقة تبوك','منطقة حائل','منطقة الحدود الشمالية','منطقة جازان',
+'منطقة نجران','منطقة الباحة','منطقة الجوف'
+];
 /* elig.step = المصدر الوحيد للحقيقة (single source of truth) للمرحلة الحالية النشطة في المعالج.
    elig.completed = أعلى رقم مرحلة تم اجتيازها فعليًا عبر validateCurrentStage() (يُستخدم فقط لتحديد نقاط "مكتملة" في مسار التقدم،
    ولا يتأثر بالتنقل للخلف أو بالانتقال المباشر عبر أزرار "تعديل"). */
 var elig={step:1,completed:0,
-basic:{name:'',phone:'',email:'',city:'',age:''},
+basic:{name:'',phone:'',city:'',age:''},
 job:{status:'',title:'',sector:''},
 fin:{sources:[],income:'',hasObligations:'',obligationsValue:'',hasExtraIncome:'',extraIncomeValue:'',extraIncomeSource:'',salaryDeposit:''},
 gen:{hasHold:'',holdTypes:[],hadHold:'',hadTypes:[]},
@@ -302,6 +307,11 @@ var groups=container.querySelectorAll('.form-group.field-error');
 for(var i=0;i<groups.length;i++){groups[i].classList.remove('field-error');var m=groups[i].querySelector('.field-error-msg');if(m)m.textContent='';}
 }
 var AGE_MIN=18,AGE_MAX=80;
+function regionOpts(selected){
+var o='<option value="">اختر المنطقة</option>';
+for(var i=0;i<SAUDI_REGIONS.length;i++){o+='<option value="'+SAUDI_REGIONS[i]+'"'+(selected===SAUDI_REGIONS[i]?' selected':'')+'>'+SAUDI_REGIONS[i]+'</option>';}
+return o;
+}
 function stage1Html(){
 var b=elig.basic;
 var ageVal=b.age?parseInt(b.age,10):AGE_MIN;
@@ -309,8 +319,7 @@ if(isNaN(ageVal))ageVal=AGE_MIN;
 return ''
 +'<div class="form-group"><label>الاسم كما هو في الهوية</label><div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="user"></span><input type="text" id="elgName" value="'+escAttr(b.name)+'"></div><span class="field-error-msg"></span></div>'
 +'<div class="form-group"><label>رقم الجوال</label><div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="phone"></span><input type="tel" id="elgPhone" placeholder="05xxxxxxxx" value="'+escAttr(b.phone)+'"></div><span class="field-error-msg"></span></div>'
-+'<div class="form-group"><label>البريد الإلكتروني</label><div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="mail"></span><input type="email" id="elgEmail" value="'+escAttr(b.email)+'"></div><span class="field-error-msg"></span></div>'
-+'<div class="form-group"><label>المدينة</label><div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="location"></span><input type="text" id="elgCity" value="'+escAttr(b.city)+'"></div><span class="field-error-msg"></span></div>'
++'<div class="form-group"><label>المنطقة</label><div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="location"></span><select id="elgCity">'+regionOpts(b.city)+'</select></div><span class="field-error-msg"></span></div>'
 +'<div class="form-group"><label>العمر <span class="label-hint">(يشترط ألا يقل عن 18 سنة)</span></label>'
 +'<div class="range-row age-range-row"><input type="range" id="elgAgeRange" min="'+AGE_MIN+'" max="'+AGE_MAX+'" step="1" value="'+ageVal+'"><input type="number" id="elgAge" class="age-number-input" min="'+AGE_MIN+'" max="'+AGE_MAX+'" value="'+ageVal+'"><span class="range-value-suffix">سنة</span></div>'
 +'<div class="range-limits"><span>'+AGE_MIN+' سنة</span><span>'+AGE_MAX+' سنة</span></div>'
@@ -397,8 +406,7 @@ typeOpts+='<option value="'+PRODUCT_TYPES[i].v+'"'+(p.type===PRODUCT_TYPES[i].v?
 return ''
 +'<div class="form-group"><label>نوع المنتج</label><div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="smartphone"></span><select id="elgProdType">'+typeOpts+'</select></div><span class="field-error-msg"></span></div>'
 +'<div class="form-group"><label>قيمة المنتج <span class="label-hint">(من '+formatSAR(PROD_VALUE_MIN)+' إلى '+formatSAR(PROD_VALUE_MAX)+')</span></label>'
-+'<div class="range-row"><input type="range" id="elgProdValue" min="'+PROD_VALUE_MIN+'" max="'+PROD_VALUE_MAX+'" step="'+PROD_VALUE_STEP+'" value="'+v+'"><span class="range-value" id="elgProdValueOut">'+formatSAR(v)+'</span></div>'
-+'<div class="range-limits"><span>'+formatSAR(PROD_VALUE_MIN)+'</span><span>'+formatSAR(PROD_VALUE_MAX)+'</span></div>'
++'<div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="money"></span><input type="number" id="elgProdValue" min="'+PROD_VALUE_MIN+'" max="'+PROD_VALUE_MAX+'" step="'+PROD_VALUE_STEP+'" value="'+v+'"></div>'
 +'<span class="field-error-msg"></span></div>';
 }
 function jobStatusLabel(v){for(var i=0;i<JOB_STATUSES.length;i++){if(JOB_STATUSES[i].v===v)return JOB_STATUSES[i].l;}return '—';}
@@ -420,7 +428,7 @@ function stage6Html(){
 var b=elig.basic,j=elig.job,f=elig.fin,g=elig.gen,p=elig.prod;
 var html='';
 html+='<div class="review-block"><div class="review-block-head"><h4>المعلومات الأساسية</h4><button type="button" class="review-edit-btn" data-goto="1">تعديل</button></div>'
-+reviewRow('الاسم',b.name)+reviewRow('رقم الجوال',b.phone)+reviewRow('البريد الإلكتروني',b.email)+reviewRow('المدينة',b.city)+reviewRow('العمر',b.age?b.age+' سنة':'—')
++reviewRow('الاسم',b.name)+reviewRow('رقم الجوال',b.phone)+reviewRow('المنطقة',b.city)+reviewRow('العمر',b.age?b.age+' سنة':'—')
 +'</div>';
 html+='<div class="review-block"><div class="review-block-head"><h4>المعلومات الوظيفية</h4><button type="button" class="review-edit-btn" data-goto="2">تعديل</button></div>'
 +reviewRow('الحالة الوظيفية',jobStatusLabel(j.status));
@@ -599,15 +607,15 @@ initAgeSlider();
    يضمن وصول القيمة فعليًا لطرفي المدى (500 و30000) لأن (المدى/الخطوة) يقبل القسمة
    تمامًا (29500/100=295)، ويُبقي العرض النصي مطابقًا 100% لقيمة الشريط في كل لحظة. */
 function initProductPriceSlider(){
-var rng=document.getElementById('elgProdValue');
-var out=document.getElementById('elgProdValueOut');
-if(!rng)return;
+var num=document.getElementById('elgProdValue');
+if(!num)return;
 function sync(){
-var v=clamp(parseInt(rng.value,10),PROD_VALUE_MIN,PROD_VALUE_MAX);
-if(out)out.textContent=formatSAR(v);
+if(num.value==='')return;
+var v=clamp(parseInt(num.value,10),PROD_VALUE_MIN,PROD_VALUE_MAX);
 elig.prod.value=String(v);
 }
-rng.addEventListener('input',sync);
+num.addEventListener('input',function(){if(this.value!=='')elig.prod.value=this.value;});
+num.addEventListener('blur',function(){var v=clamp(parseInt(this.value,10)||PROD_VALUE_MIN,PROD_VALUE_MIN,PROD_VALUE_MAX);this.value=v;sync();});
 sync();
 }
 /* ============================================================================
@@ -646,7 +654,7 @@ function clamp(n,min,max){if(isNaN(n))return min;return Math.min(max,Math.max(mi
 function saveCurrentStage(){
 var step=elig.step;
 if(step===1){
-elig.basic.name=val('elgName');elig.basic.phone=val('elgPhone');elig.basic.email=val('elgEmail');elig.basic.city=val('elgCity');elig.basic.age=val('elgAge');
+elig.basic.name=val('elgName');elig.basic.phone=val('elgPhone');elig.basic.city=val('elgCity');elig.basic.age=val('elgAge');
 }else if(step===2){
 elig.job.status=val('elgJobStatus');elig.job.title=val('elgJobTitle');elig.job.sector=val('elgJobSector');
 }else if(step===3){
@@ -661,11 +669,10 @@ var content=document.getElementById('eligStageContent');
 clearAllFieldErrors(content);
 var ok=true;
 if(step===1){
-var name=val('elgName'),phone=val('elgPhone'),email=val('elgEmail'),city=val('elgCity'),age=val('elgAge');
+var name=val('elgName'),phone=val('elgPhone'),city=val('elgCity'),age=val('elgAge');
 if(!name){setFieldError('elgName','يرجى إدخال الاسم');ok=false;}
 if(!/^05[0-9]{8}$/.test(phone)){setFieldError('elgPhone','رقم الجوال يجب أن يبدأ بـ 05 ويتكون من 10 أرقام');ok=false;}
-if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){setFieldError('elgEmail','يرجى إدخال بريد إلكتروني صحيح');ok=false;}
-if(!city){setFieldError('elgCity','يرجى إدخال المدينة');ok=false;}
+if(!city){setFieldError('elgCity','يرجى اختيار المنطقة');ok=false;}
 var ageNumVal=parseInt(age,10);
 if(!age||isNaN(ageNumVal)){setFieldError('elgAge','يرجى إدخال عمر صحيح');ok=false;}
 else if(ageNumVal<AGE_MIN){setFieldError('elgAge','نعتذر، يشترط ألا يقل العمر عن 18 سنة للاستفادة من هذه الخدمة.');ok=false;}
@@ -779,8 +786,7 @@ lines.push(SEP);
 lines.push('*أولاً: المعلومات الأساسية*');
 lines.push('الاسم: '+b.name);
 lines.push('رقم الجوال: '+b.phone);
-lines.push('البريد الإلكتروني: '+b.email);
-lines.push('المدينة: '+b.city);
+lines.push('المنطقة: '+b.city);
 lines.push('العمر: '+(b.age?b.age+' سنة':'—'));
 lines.push(SEP);
 lines.push('*ثانيًا: المعلومات الوظيفية*');
@@ -891,7 +897,7 @@ var html=''
 +'<div class="modal-actions"><button class="btn btn-gold" id="eligConfirmBtn" type="button">تأكيد الإرسال</button><button class="btn btn-outline-navy" id="eligCancelConfirmBtn" type="button">إلغاء</button></div>'
 +'</div></div>'
 +'<div class="modal-view" data-view="sending"><div class="sending-view">'
-+'<img src="assets/logo.png" alt="مدى التسهيل"><h4>جاري إرسال طلبك...</h4><p>نجهز طلبك للتواصل عبر واتساب</p><div class="spinner"></div>'
++'<img src="assets/logo.png" alt="مدى التسهيل"><h4>جاري إرسال التحقق من أهليتك...</h4><p>شكرًا لثقتك بنا، نجهز بياناتك الآن لنوصلك مباشرة بفريقنا عبر واتساب</p><div class="spinner"></div>'
 +'</div></div>'
 +'</div>'
 +'</div>'
@@ -939,7 +945,6 @@ var chHtml=''
 +'<div class="modal-body">'
 +'<div class="chooser-list">'
 +'<button type="button" class="chooser-btn" id="chooserEligBtn"><span class="icon-3d gold" data-icon="verify"></span><span class="chooser-btn-text"><span class="chooser-btn-title">تحقق من أهليتك</span><span class="chooser-btn-desc">اعرف إذا كنت مؤهلاً للخدمة خطوة بخطوة.</span></span></button>'
-+'<button type="button" class="chooser-btn" id="chooserCustomBtn"><span class="icon-3d gold" data-icon="star"></span><span class="chooser-btn-text"><span class="chooser-btn-title">طلب خاص</span><span class="chooser-btn-desc">اطلب منتجًا غير متوفر ضمن قائمتنا.</span></span></button>'
 +'<button type="button" class="chooser-btn" id="chooserInquiryBtn"><span class="icon-3d gold" data-icon="message"></span><span class="chooser-btn-text"><span class="chooser-btn-title">استفسار عام</span><span class="chooser-btn-desc">تواصل معنا مباشرة عبر واتساب.</span></span></button>'
 +'</div></div></div></div>';
 document.body.insertAdjacentHTML('beforeend',chHtml);
@@ -1016,8 +1021,6 @@ var fab=document.getElementById('fabWhatsapp');
 if(fab){fab.removeAttribute('data-open-inquiry');fab.addEventListener('click',function(){openChooser();});}
 var eb=document.getElementById('chooserEligBtn');
 if(eb)eb.addEventListener('click',function(){closeModal('chooserModal');openEligibility();});
-var cb=document.getElementById('chooserCustomBtn');
-if(cb)cb.addEventListener('click',function(){closeModal('chooserModal');openCustomRequest();});
 var ib=document.getElementById('chooserInquiryBtn');
 if(ib)ib.addEventListener('click',function(){
 closeModal('chooserModal');
@@ -1039,10 +1042,12 @@ var fab=document.getElementById('fabWhatsapp');
 if(fab)applyIcons();
 }
 document.addEventListener('DOMContentLoaded',function(){
+/* قسم التحقق من الأهلية وفتحه التلقائي خاصان بالصفحة الرئيسية فقط (تحديد وجودها عبر #home) */
+var isHomePage=!!document.getElementById('home');
 applyIcons();
 initSplash();
 initSidebar();
-injectEligibilitySection();
+if(isHomePage)injectEligibilitySection();
 injectModals();
 initReveal();
 initStats();
@@ -1053,6 +1058,6 @@ initChooserFlow();
 initInquiryFlow();
 initFabWhatsapp();
 /* فتح معالج التحقق من الأهلية تلقائيًا وفوريًا عند تحميل الصفحة، دون أي نقرة من المستخدم */
-autoOpenEligibility();
+if(isHomePage)autoOpenEligibility();
 });
 })();
