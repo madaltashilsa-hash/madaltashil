@@ -338,8 +338,10 @@ var b=elig.basic;
 var ageVal=b.age?parseInt(b.age,10):AGE_MIN;
 if(isNaN(ageVal))ageVal=AGE_MIN;
 return ''
++'<div class="form-row">'
 +'<div class="form-group"><label>الاسم كما هو في الهوية</label><div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="user"></span><input type="text" id="elgName" value="'+escAttr(b.name)+'"></div><span class="field-error-msg"></span></div>'
 +'<div class="form-group"><label>رقم الجوال</label><div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="phone"></span><input type="tel" id="elgPhone" placeholder="05xxxxxxxx" value="'+escAttr(b.phone)+'"></div><span class="field-error-msg"></span></div>'
++'</div>'
 +'<div class="form-group"><label>المنطقة</label><div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="location"></span><select id="elgCity">'+regionOpts(b.city)+'</select></div><span class="field-error-msg"></span></div>'
 +'<div class="form-group"><label>العمر <span class="label-hint">(يشترط ألا يقل عن 18 سنة)</span></label>'
 +'<div class="range-row age-range-row"><input type="range" id="elgAgeRange" min="'+AGE_MIN+'" max="'+AGE_MAX+'" step="1" value="'+ageVal+'"><input type="number" id="elgAge" class="age-number-input" min="'+AGE_MIN+'" max="'+AGE_MAX+'" value="'+ageVal+'"><span class="range-value-suffix">سنة</span></div>'
@@ -356,8 +358,10 @@ var showExtra=JOB_WITH_TITLE.indexOf(j.status)>=0;
 return ''
 +'<div class="form-group"><label>الحالة الوظيفية</label><div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="business"></span><select id="elgJobStatus">'+opts+'</select></div><span class="field-error-msg"></span></div>'
 +'<div class="cond-block'+(showExtra?' show':'')+'" id="jobExtra">'
++'<div class="form-row">'
 +'<div class="form-group"><label>مسمى الوظيفة</label><div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="tag"></span><input type="text" id="elgJobTitle" value="'+escAttr(j.title)+'"></div></div>'
 +'<div class="form-group"><label>القطاع</label><div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="company"></span><input type="text" id="elgJobSector" value="'+escAttr(j.sector)+'"></div></div>'
++'</div>'
 +'</div>';
 }
 function stage3Html(){
@@ -384,8 +388,10 @@ return ''
 +'<button type="button" class="choice-chip'+(f.hasExtraIncome==='no'?' selected':'')+'" data-yesno="hasExtraIncome" data-val="no">لا</button>'
 +'</div></div>'
 +'<div class="cond-block'+(showExtraVal?' show':'')+'" id="extraBlock">'
++'<div class="form-row">'
 +'<div class="form-group"><label>قيمة الدخل الإضافي</label><div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="money"></span><input type="number" id="elgExtraValue" value="'+escAttr(f.extraIncomeValue)+'"></div></div>'
 +'<div class="form-group"><label>مصدر الدخل الإضافي</label><div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="tag"></span><input type="text" id="elgExtraSource" value="'+escAttr(f.extraIncomeSource)+'"></div></div>'
++'</div>'
 +'</div>'
 +'<div class="cond-block'+(showSalaryDeposit?' show':'')+'" id="salaryDepositBlock"><div class="form-group"><label>قيمة الراتب المودع في الحساب البنكي</label><div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="money"></span><input type="number" id="elgSalaryDeposit" value="'+escAttr(f.salaryDeposit)+'"></div></div></div>';
 }
@@ -425,10 +431,12 @@ for(var i=0;i<PRODUCT_TYPES.length;i++){
 typeOpts+='<option value="'+PRODUCT_TYPES[i].v+'"'+(p.type===PRODUCT_TYPES[i].v?' selected':'')+'>'+PRODUCT_TYPES[i].l+'</option>';
 }
 return ''
++'<div class="form-row">'
 +'<div class="form-group"><label>نوع المنتج</label><div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="smartphone"></span><select id="elgProdType">'+typeOpts+'</select></div><span class="field-error-msg"></span></div>'
 +'<div class="form-group"><label>قيمة المنتج <span class="label-hint">(من '+formatSAR(PROD_VALUE_MIN)+' إلى '+formatSAR(PROD_VALUE_MAX)+')</span></label>'
 +'<div class="input-wrap"><span class="input-icon icon-3d gold" data-icon="money"></span><input type="number" id="elgProdValue" min="'+PROD_VALUE_MIN+'" max="'+PROD_VALUE_MAX+'" step="'+PROD_VALUE_STEP+'" value="'+v+'"></div>'
-+'<span class="field-error-msg"></span></div>';
++'<span class="field-error-msg"></span></div>'
++'</div>';
 }
 function jobStatusLabel(v){for(var i=0;i<JOB_STATUSES.length;i++){if(JOB_STATUSES[i].v===v)return JOB_STATUSES[i].l;}return '—';}
 function incomeSourcesLabel(arr){
@@ -510,9 +518,9 @@ if(desc)desc.textContent=ELIG_STAGE_DESCRIPTIONS[elig.step-1]||'';
 function renderEligNav(){
 var wrap=document.getElementById('eligNavActions');if(!wrap)return;
 var html='<div class="elig-nav-main">';
-if(elig.step>1){html+='<button type="button" class="btn btn-outline-navy" id="eligBackBtn">رجوع</button>';}
-if(elig.step<ELIG_STAGE_COUNT){html+='<button type="button" class="btn btn-gold" id="eligNextBtn">التالي</button>';}
-else{html+='<button type="button" class="btn btn-gold" id="eligSubmitBtn">إرسال الطلب</button><button type="button" class="btn btn-outline-navy" id="eligEditBtn">تعديل البيانات</button>';}
+if(elig.step>1){html+='<button type="button" class="btn btn-ghost-nav" id="eligBackBtn"><span class="nav-arrow nav-arrow-back">→</span>رجوع</button>';}
+if(elig.step<ELIG_STAGE_COUNT){html+='<button type="button" class="btn btn-gold" id="eligNextBtn">التالي<span class="nav-arrow">←</span></button>';}
+else{html+='<button type="button" class="btn btn-gold" id="eligSubmitBtn">إرسال الطلب<span class="nav-arrow">←</span></button><button type="button" class="btn btn-ghost-nav" id="eligEditBtn">تعديل البيانات</button>';}
 html+='</div>';
 html+='<div class="elig-nav-secondary"><button type="button" class="btn-text" id="eligSaveDraftBtn">حفظ ومتابعة لاحقًا</button><button type="button" class="btn-text btn-text-muted" id="eligCancelBtn">إلغاء</button></div>';
 wrap.innerHTML=html;
