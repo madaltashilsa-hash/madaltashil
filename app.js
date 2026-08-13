@@ -165,6 +165,26 @@ var views=m.querySelectorAll('.modal-view');
 for(var i=0;i<views.length;i++){views[i].classList.remove('active');}
 var target=m.querySelector('[data-view="'+viewName+'"]');
 if(target)target.classList.add('active');
+if(modalId==='eligibilityModal')anchorEligView();
+}
+/* anchorEligView(): معالج التحقق من الأهلية مضمّن داخل الصفحة (وليس نافذة عائمة)، فأي تغيّر في ارتفاعه
+   (بين المراحل، أو بين واجهات المراجعة/التأكيد/الإرسال) يزيح كل المحتوى الذي تحته فجأة، فيبدو للمستخدم
+   وكأن الصفحة "قفزت" لأعلى أو لأسفل رغم أن موضع التمرير (scrollY) لم يتغيّر فعليًا. هذه الدالة تُبقي
+   رأس صندوق المعالج ثابتًا أسفل الشريط العلوي مباشرة بعد كل تغيير، بدل ترك المستخدم ينظر لموضع خاطئ
+   من الصفحة (وقد يصل الأمر لاختفاء زر "تأكيد الإرسال" خارج الشاشة تمامًا). */
+function anchorEligView(){
+var m=document.getElementById('eligibilityModal');
+if(!m)return;
+var header=m.querySelector('.modal-header')||m;
+var offset=92;
+var doAnchor=function(){
+var rect=header.getBoundingClientRect();
+if(rect.top<offset-24||rect.top>offset+48){
+var targetY=window.scrollY+rect.top-offset;
+window.scrollTo({top:Math.max(targetY,0),behavior:'smooth'});
+}
+};
+if(window.requestAnimationFrame)requestAnimationFrame(doAnchor);else setTimeout(doAnchor,0);
 }
 function initModalClosers(){
 var closers=document.querySelectorAll('[data-close]');
@@ -270,6 +290,7 @@ function showStage(n){
 var target=clamp(parseInt(n,10),1,ELIG_STAGE_COUNT);
 elig.step=target;
 renderEligStage();
+anchorEligView();
 }
 function escAttr(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 /* تنسيق قيمة مالية بصيغة الريال السعودي مع فواصل الآلاف - تُستخدم فقط لعرض قيمة المنتج */
