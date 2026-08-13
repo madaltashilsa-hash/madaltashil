@@ -238,7 +238,10 @@ var PRODUCT_TYPES=[
 {v:'phones',l:'جوالات'},
 {v:'electronics',l:'منتجات إلكترونية'}
 ];
-var elig={step:1,
+/* elig.step = المصدر الوحيد للحقيقة (single source of truth) للمرحلة الحالية النشطة في المعالج.
+   elig.completed = أعلى رقم مرحلة تم اجتيازها فعليًا عبر validateCurrentStage() (يُستخدم فقط لتحديد نقاط "مكتملة" في مسار التقدم،
+   ولا يتأثر بالتنقل للخلف أو بالانتقال المباشر عبر أزرار "تعديل"). */
+var elig={step:1,completed:0,
 basic:{name:'',phone:'',email:'',city:'',age:''},
 job:{status:'',title:'',sector:''},
 fin:{sources:[],income:'',hasObligations:'',obligationsValue:'',hasExtraIncome:'',extraIncomeValue:'',extraIncomeSource:'',salaryDeposit:''},
@@ -247,11 +250,19 @@ prod:{value:'',type:''}
 };
 function resetElig(){
 elig.step=1;
+elig.completed=0;
 elig.basic={name:'',phone:'',email:'',city:'',age:''};
 elig.job={status:'',title:'',sector:''};
 elig.fin={sources:[],income:'',hasObligations:'',obligationsValue:'',hasExtraIncome:'',extraIncomeValue:'',extraIncomeSource:'',salaryDeposit:''};
 elig.gen={hasHold:'',holdTypes:[],hadHold:'',hadTypes:[]};
 elig.prod={value:'',type:''};
+}
+/* showStage(n): الدالة الوحيدة المسؤولة عن تغيير المرحلة الحالية وإعادة الرسم. جميع أزرار التنقل
+   (التالي/رجوع/تعديل/روابط "تعديل" في المراجعة) يجب أن تمر حصريًا عبر هذه الدالة بدل تعديل elig.step مباشرة. */
+function showStage(n){
+var target=clamp(parseInt(n,10),1,ELIG_STAGE_COUNT);
+elig.step=target;
+renderEligStage();
 }
 function escAttr(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 /* تنسيق قيمة مالية بصيغة الريال السعودي مع فواصل الآلاف - تُستخدم فقط لعرض قيمة المنتج */
@@ -452,7 +463,11 @@ var wrap=document.getElementById('eligProgress');if(!wrap)return;
 var html='';
 for(var i=1;i<=ELIG_STAGE_COUNT;i++){
 var cls='stage-dot';
-if(i<elig.step)cls+=' done';else if(i===elig.step)cls+=' current';
+/* المرحلة المعروضة فعليًا (elig.step) لها الأولوية دائمًا في تحديد "current" حتى لو كانت قد اجتازت
+   التحقق سابقًا (مثلاً بعد الرجوع لتعديلها) — بذلك لا يختلف أبدًا موضع المؤشر عن المرحلة المعروضة فعليًا.
+   و"مكتملة" (done) فقط لمرحلة اجتازت validateCurrentStage() فعليًا (elig.completed) وليست هي المرحلة الحالية. */
+if(i===elig.step)cls+=' current';
+else if(i<=elig.completed)cls+=' done';
 html+='<span class="'+cls+'" data-num="'+i+'"></span>';
 }
 wrap.innerHTML=html;
@@ -497,14 +512,23 @@ var holdType=document.getElementById('holdTypeBlock');if(holdType){if(elig.gen.h
 var hadType=document.getElementById('hadTypeBlock');if(hadType){if(elig.gen.hadHold==='yes')hadType.classList.add('show');else hadType.classList.remove('show');}
 }
 function bindEligStageEvents(){
+/* التنقل بالكامل يمر عبر showStage(n) — مصدر واحد للحقيقة لتحديد المرحلة المعروضة، بدل تفريق تعديل elig.step في كل مكان */
 var back=document.getElementById('eligBackBtn');
-if(back)back.addEventListener('click',function(){saveCurrentStage();elig.step--;renderEligStage();});
+if(back)back.addEventListener('click',function(){saveCurrentStage();showStage(elig.step-1);});
 var next=document.getElementById('eligNextBtn');
-if(next)next.addEventListener('click',function(){if(validateCurrentStage()){saveCurrentStage();elig.step++;renderEligStage();showToast('تم حفظ بياناتك، أكمل الخطوة التالية.');}});
+if(next)next.addEventListener('click',function(){
+if(validateCurrentStage()){
+saveCurrentStage();
+/* لا تُعتبر المرحلة "مكتملة" إلا بعد اجتيازها فعليًا لـ validateCurrentStage() أعلاه */
+if(elig.step>elig.completed)elig.completed=elig.step;
+showStage(elig.step+1);
+showToast('تم حفظ بياناتك، أكمل الخطوة التالية.');
+}
+});
 var submitBtn=document.getElementById('eligSubmitBtn');
 if(submitBtn)submitBtn.addEventListener('click',function(){openEligConfirm();});
 var editBtn=document.getElementById('eligEditBtn');
-if(editBtn)editBtn.addEventListener('click',function(){elig.step=1;renderEligStage();});
+if(editBtn)editBtn.addEventListener('click',function(){showStage(1);});
 var saveDraftBtn=document.getElementById('eligSaveDraftBtn');
 if(saveDraftBtn)saveDraftBtn.addEventListener('click',function(){saveDraft();showToast('تم حفظ طلبك، يمكنك المتابعة لاحقًا من نفس الجهاز.');closeModal('eligibilityModal');});
 var cancelBtn=document.getElementById('eligCancelBtn');
@@ -513,7 +537,7 @@ if(window.confirm('هل تريد إلغاء الطلب؟ سيتم حذف أي ب
 });
 var editLinks=document.querySelectorAll('.review-edit-btn');
 for(var i=0;i<editLinks.length;i++){
-editLinks[i].addEventListener('click',function(){elig.step=parseInt(this.getAttribute('data-goto'),10);renderEligStage();});
+editLinks[i].addEventListener('click',function(){showStage(parseInt(this.getAttribute('data-goto'),10));});
 }
 var jobSel=document.getElementById('elgJobStatus');
 if(jobSel)jobSel.addEventListener('change',function(){
@@ -561,29 +585,59 @@ if(idx>=0){elig.gen.hadTypes.splice(idx,1);this.classList.remove('selected');}
 else{elig.gen.hadTypes.push(v);this.classList.add('selected');}
 });
 }
-/* مؤشر قيمة المنتج - يتحكم حصريًا في elig.prod.value ولا يجوز ربطه بأي حقل مالي آخر (الدخل، الالتزامات، الدفعات...) */
-var rng=document.getElementById('elgProdValue');
-if(rng)rng.addEventListener('input',function(){
-var v=clamp(parseInt(this.value,10),PROD_VALUE_MIN,PROD_VALUE_MAX);
-var out=document.getElementById('elgProdValueOut');
-if(out)out.textContent=formatSAR(v);
-elig.prod.value=String(v);
-});
+initProductPriceSlider();
 var typeSel=document.getElementById('elgProdType');
 if(typeSel)typeSel.addEventListener('change',function(){elig.prod.type=this.value;});
-/* مؤشر العمر - مرتبط حصريًا بـ elig.basic.age، محصور بين 18 و80 سنة عبر خاصيتي min/max على شريط التمرير نفسه */
+initAgeSlider();
+}
+/* ============================================================================
+   مؤشر قيمة المنتج (productPriceSlider) — مستقل تمامًا عن مؤشر العمر:
+   عناصره (elgProdValue/elgProdValueOut) ومتغيراته (PROD_VALUE_MIN/MAX/STEP) ومنطقه
+   الخاص بالكامل، ولا يشترك في أي حالة أو دالة أو مستمع مع مؤشر العمر (ageSlider).
+   يضمن وصول القيمة فعليًا لطرفي المدى (500 و30000) لأن (المدى/الخطوة) يقبل القسمة
+   تمامًا (29500/100=295)، ويُبقي العرض النصي مطابقًا 100% لقيمة الشريط في كل لحظة. */
+function initProductPriceSlider(){
+var rng=document.getElementById('elgProdValue');
+var out=document.getElementById('elgProdValueOut');
+if(!rng)return;
+function sync(){
+var v=clamp(parseInt(rng.value,10),PROD_VALUE_MIN,PROD_VALUE_MAX);
+if(out)out.textContent=formatSAR(v);
+elig.prod.value=String(v);
+}
+rng.addEventListener('input',sync);
+sync();
+}
+/* ============================================================================
+   مؤشر العمر (ageSlider) — مستقل تمامًا عن مؤشر قيمة المنتج:
+   عناصره (elgAgeRange/elgAge) ومتغيراته (AGE_MIN/AGE_MAX) ومنطقه الخاص بالكامل،
+   ولا يشترك في أي حالة أو دالة أو مستمع مع مؤشر السعر (productPriceSlider).
+   الشريط نفسه (elgAgeRange) لا يمكن أن يخرج عن 18-80 لأن min/max مضبوطتان عليه مباشرة
+   و(80-18=62) تقبل القسمة تمامًا على step=1، فطرفا المدى (18 و80) قابلان للوصول فعليًا دائمًا.
+   حقل الرقم (elgAge) يسمح بالكتابة اليدوية، ويُزامَن الشريط معه أثناء الكتابة، ويُضبط (يُقفل)
+   على القيمة الصحيحة بالكامل (clamp) عند إنهاء التحرير (blur) بحيث يتطابق العرض مع القيمة 100%. */
+function initAgeSlider(){
 var ageRange=document.getElementById('elgAgeRange');
 var ageNum=document.getElementById('elgAge');
-if(ageRange)ageRange.addEventListener('input',function(){
-if(ageNum)ageNum.value=this.value;
+if(!ageRange||!ageNum)return;
+function applyAgeError(n){
+if(isNaN(n)){clearFieldError('elgAge');return;}
+if(n<AGE_MIN){setFieldError('elgAge','نعتذر، يشترط ألا يقل العمر عن 18 سنة للاستفادة من هذه الخدمة.');}
+else if(n>AGE_MAX){setFieldError('elgAge','يرجى إدخال عمر لا يتجاوز 80 سنة.');}
+else{clearFieldError('elgAge');}
+}
+ageRange.addEventListener('input',function(){
+/* الشريط نفسه محصور بـ min/max فلا يمكن أن يخرج قيمته عن 18-80 */
+ageNum.value=this.value;
+elig.basic.age=this.value;
 clearFieldError('elgAge');
 });
-if(ageNum)ageNum.addEventListener('input',function(){
+ageNum.addEventListener('input',function(){
+/* لا نُقفل (clamp) قيمة حقل الرقم نفسه هنا عمدًا: لو كتب المستخدم رقمًا خارج 18-80 يجب أن تبقى رسالة
+   الرفض ظاهرة عند محاولة المتابعة (validateCurrentStage)، بينما الشريط المرئي فقط يُثبَّت عند أقرب حد مسموح. */
 var n=parseInt(this.value,10);
-if(!isNaN(n)&&ageRange){var clamped=clamp(n,AGE_MIN,AGE_MAX);ageRange.value=clamped;}
-if(!isNaN(n)&&n<AGE_MIN){setFieldError('elgAge','نعتذر، يشترط ألا يقل العمر عن 18 سنة للاستفادة من هذه الخدمة.');}
-else if(!isNaN(n)&&n>AGE_MAX){setFieldError('elgAge','يرجى إدخال عمر لا يتجاوز 80 سنة.');}
-else{clearFieldError('elgAge');}
+if(!isNaN(n)){ageRange.value=clamp(n,AGE_MIN,AGE_MAX);elig.basic.age=this.value;}
+applyAgeError(n);
 });
 }
 function clamp(n,min,max){if(isNaN(n))return min;return Math.min(max,Math.max(min,n));}
@@ -656,11 +710,21 @@ function clearDraft(){
 try{localStorage.removeItem(ELIG_DRAFT_KEY);}catch(e){}
 }
 function openEligibility(){
+var m=document.getElementById('eligibilityModal');
+/* حماية من الفتح المزدوج/الحالة غير الصحيحة: إن كان المعالج مفتوحًا بالفعل (سواء فُتح تلقائيًا عند
+   تحميل الصفحة أو يدويًا) فلا نُعيد التصفير (resetElig) ولا نعرض مربع حوار الاستكمال من جديد —
+   فقط نُعيد التمرير إليه مع الحفاظ الكامل على تقدم المستخدم الحالي. */
+if(m&&m.classList.contains('show')){
+switchView('eligibilityModal','wizard');
+m.scrollIntoView({behavior:'smooth',block:'start'});
+return;
+}
 var draft=loadDraft();
 if(draft&&draft.step){
 var resume=window.confirm('لديك طلب محفوظ سابقًا، هل تريد المتابعة من حيث توقفت؟\nاضغط "موافق" للمتابعة، أو "إلغاء" لبدء طلب جديد.');
 if(resume){
-elig.step=draft.step;elig.basic=draft.basic||elig.basic;elig.job=draft.job||elig.job;elig.fin=draft.fin||elig.fin;elig.gen=draft.gen||elig.gen;elig.prod=draft.prod||elig.prod;
+elig.step=draft.step;elig.completed=draft.completed||Math.max(0,draft.step-1);
+elig.basic=draft.basic||elig.basic;elig.job=draft.job||elig.job;elig.fin=draft.fin||elig.fin;elig.gen=draft.gen||elig.gen;elig.prod=draft.prod||elig.prod;
 }else{
 clearDraft();resetElig();elig.step=1;
 }
@@ -670,8 +734,27 @@ elig.step=1;
 }
 switchView('eligibilityModal','wizard');
 renderEligStage();
-var m=document.getElementById('eligibilityModal');
 if(m){m.classList.add('show');m.scrollIntoView({behavior:'smooth',block:'start'});}
+}
+/* autoOpenEligibility(): تُستدعى مرة واحدة فقط عند تحميل الصفحة (DOMContentLoaded) لفتح المعالج تلقائيًا
+   دون أي نقرة من المستخدم. لا تعرض مربع حوار "استكمال الطلب المحفوظ" بشكل حاجب فور تحميل الصفحة (تجربة
+   مستخدم أفضل)؛ بدل ذلك تستأنف أي مسودة محفوظة بصمت، أو تبدأ من المرحلة الأولى إن لم توجد مسودة. */
+var __eligAutoOpened=false;
+function autoOpenEligibility(){
+if(__eligAutoOpened)return;
+__eligAutoOpened=true;
+var draft=loadDraft();
+if(draft&&draft.step){
+elig.step=draft.step;elig.completed=draft.completed||Math.max(0,draft.step-1);
+elig.basic=draft.basic||elig.basic;elig.job=draft.job||elig.job;elig.fin=draft.fin||elig.fin;elig.gen=draft.gen||elig.gen;elig.prod=draft.prod||elig.prod;
+}else{
+resetElig();
+elig.step=1;
+}
+switchView('eligibilityModal','wizard');
+renderEligStage();
+var m=document.getElementById('eligibilityModal');
+if(m)m.classList.add('show');
 }
 function openEligConfirm(){
 saveCurrentStage();
@@ -681,41 +764,36 @@ txt.textContent='هل أنت متأكد من إرسال طلب التحقق من
 }
 switchView('eligibilityModal','confirm');
 }
-function sendEligibility(){
-switchView('eligibilityModal','sending');
-var waWin=window.open('','_blank');
-var msg=buildEligibilityMessage();
-clearDraft();
-setTimeout(function(){
-if(waWin){waWin.location.href=waLink(msg);}else{window.open(waLink(msg),'_blank');}
-closeModal('eligibilityModal');
-},5000);
-}
-function buildEligibilityMessage(){
+/* buildWhatsAppMessage(): بناء نص الرسالة فقط (بدون أي منطق إرسال/تحقق) — بصيغة واتساب الأصلية:
+   عناوين *عريضة* بنجمة واحدة (صيغة واتساب للـ bold)، فواصل أقسام ━━━، بدون أي وسوم HTML أو رموز
+   غير مدعومة، وبدون أي من الحقول المحذوفة سابقًا (العلامة التجارية/اسم المنتج/المواصفات/اللون/الصور). */
+function buildWhatsAppMessage(){
 var b=elig.basic,j=elig.job,f=elig.fin,g=elig.gen,p=elig.prod;
+var SEP='━━━━━━━━━━━━━━';
 var lines=[];
-lines.push('طلب تحقق من الأهلية - مدى التسهيل للتجارة');
-lines.push('');
-lines.push('== المعلومات الأساسية ==');
+lines.push('*طلب تحقق من الأهلية*');
+lines.push('مدى التسهيل للتجارة');
+lines.push(SEP);
+lines.push('*أولاً: المعلومات الأساسية*');
 lines.push('الاسم: '+b.name);
 lines.push('رقم الجوال: '+b.phone);
 lines.push('البريد الإلكتروني: '+b.email);
 lines.push('المدينة: '+b.city);
 lines.push('العمر: '+(b.age?b.age+' سنة':'—'));
-lines.push('');
-lines.push('== المعلومات الوظيفية ==');
+lines.push(SEP);
+lines.push('*ثانيًا: المعلومات الوظيفية*');
 lines.push('الحالة الوظيفية: '+jobStatusLabel(j.status));
 if(JOB_WITH_TITLE.indexOf(j.status)>=0){
 lines.push('مسمى الوظيفة: '+j.title);
 lines.push('القطاع: '+j.sector);
 }
-lines.push('');
-lines.push('== المعلومات المالية ==');
+lines.push(SEP);
+lines.push('*ثالثًا: المعلومات المالية*');
 lines.push('مصدر الدخل: '+incomeSourcesLabel(f.sources));
 lines.push('إجمالي الدخل الشهري: '+f.income);
-lines.push('هل توجد التزامات شهرية؟ '+yesNoLabel(f.hasObligations));
+lines.push('توجد التزامات شهرية: '+yesNoLabel(f.hasObligations));
 if(f.hasObligations==='yes')lines.push('قيمة الالتزامات الشهرية: '+f.obligationsValue);
-lines.push('هل يوجد دخل إضافي؟ '+yesNoLabel(f.hasExtraIncome));
+lines.push('يوجد دخل إضافي: '+yesNoLabel(f.hasExtraIncome));
 if(f.hasExtraIncome==='yes'){
 lines.push('قيمة الدخل الإضافي: '+f.extraIncomeValue);
 lines.push('مصدر الدخل الإضافي: '+f.extraIncomeSource);
@@ -723,23 +801,46 @@ lines.push('مصدر الدخل الإضافي: '+f.extraIncomeSource);
 if(JOB_WITH_TITLE.indexOf(j.status)>=0){
 lines.push('الراتب المودع بالحساب البنكي: '+f.salaryDeposit);
 }
-lines.push('');
-lines.push('== المعلومات العامة ==');
-lines.push('هل يوجد إيقاف خدمات ساري؟ '+yesNoLabel(g.hasHold));
+lines.push(SEP);
+lines.push('*رابعًا: المعلومات العامة*');
+lines.push('يوجد إيقاف خدمات ساري: '+yesNoLabel(g.hasHold));
 if(g.hasHold==='yes')lines.push('نوع إيقاف الخدمات: '+holdTypesLabel(g.holdTypes));
-lines.push('هل سبق إيقاف خدماتكم؟ '+yesNoLabel(g.hadHold));
+lines.push('سبق إيقاف الخدمات: '+yesNoLabel(g.hadHold));
 if(g.hadHold==='yes')lines.push('نوع إيقاف الخدمات السابق: '+holdTypesLabel(g.hadTypes));
-lines.push('');
-lines.push('== معلومات المنتج ==');
+lines.push(SEP);
+lines.push('*خامسًا: معلومات المنتج*');
 lines.push('نوع المنتج: '+productTypeLabel(p.type));
 lines.push('قيمة المنتج المطلوبة: '+(p.value?formatSAR(p.value):'—'));
+lines.push(SEP);
+lines.push('*ملخص الطلب*');
+lines.push('نوع الطلب: تحقق من الأهلية');
+lines.push('حالة الطلب: بانتظار المراجعة');
 return lines.join('\n');
+}
+/* sendToWhatsApp(): يتحقق من اكتمال البيانات الأساسية، ثم يبني الرسالة عبر buildWhatsAppMessage()
+   فقط (بدون تكرار منطق البناء هنا)، ثم يُشفّرها عبر encodeURIComponent() (داخل waLink) ويفتح واتساب. */
+function sendToWhatsApp(){
+if(!elig.basic.name||!elig.basic.phone||!elig.basic.age){
+showToast('يرجى استكمال بياناتك الأساسية قبل الإرسال.');
+switchView('eligibilityModal','wizard');
+showStage(1);
+return;
+}
+switchView('eligibilityModal','sending');
+var waWin=window.open('','_blank');
+var msg=buildWhatsAppMessage();
+var link=waLink(msg);
+clearDraft();
+setTimeout(function(){
+if(waWin){waWin.location.href=link;}else{window.open(link,'_blank');}
+closeModal('eligibilityModal');
+},5000);
 }
 function initEligibilityFlow(){
 var startBtn=document.getElementById('startEligibilityBtn');
 if(startBtn)startBtn.addEventListener('click',function(){openEligibility();});
 var confirmBtn=document.getElementById('eligConfirmBtn');
-if(confirmBtn)confirmBtn.addEventListener('click',function(){sendEligibility();});
+if(confirmBtn)confirmBtn.addEventListener('click',function(){sendToWhatsApp();});
 var cancelBtn=document.getElementById('eligCancelConfirmBtn');
 if(cancelBtn)cancelBtn.addEventListener('click',function(){switchView('eligibilityModal','wizard');});
 }
@@ -770,7 +871,7 @@ var html=''
 +'</div>'
 +'<div class="elig-cta">'
 +'<h3>جاهز تعرف أهليتك؟</h3>'
-+'<button type="button" class="btn btn-gold" id="startEligibilityBtn">تحقّق من أهليتك الآن</button>'
++'<p class="elig-cta-note">النموذج مفتوح أدناه مباشرة — عبّئ بياناتك دون الحاجة لأي نقرة إضافية.</p>'
 +'</div>'
 +'<p class="elig-disclaimer">قد تختلف نتيجة الأهلية بحسب البيانات والمتطلبات والمعايير المعتمدة للخدمة، وتعبئة النموذج لا تعني الموافقة النهائية.</p>'
 +'<div class="elig-inline-wizard" id="eligibilityModal">'
@@ -951,5 +1052,7 @@ initCustomRequestFlow();
 initChooserFlow();
 initInquiryFlow();
 initFabWhatsapp();
+/* فتح معالج التحقق من الأهلية تلقائيًا وفوريًا عند تحميل الصفحة، دون أي نقرة من المستخدم */
+autoOpenEligibility();
 });
 })();
