@@ -286,6 +286,13 @@ footer{background:linear-gradient(180deg,var(--navy),#081222);color:#fff;padding
 .input-wrap .input-icon.icon-top{top:16px;transform:none}
 .input-wrap:focus-within .input-icon{transform:translateY(-50%) scale(1.12);box-shadow:inset 0 1px 0 rgba(255,255,255,.15),0 0 0 6px rgba(47,111,237,.18),0 10px 22px rgba(11,28,51,.3)}
 .input-wrap:focus-within .input-icon.icon-top{transform:scale(1.12)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-row .form-group{margin-bottom:0}
+.btn-ghost-nav{background:transparent;color:var(--navy-3);border:1.5px solid transparent;padding:14px 22px}
+.btn-ghost-nav:hover{background:rgba(28,58,99,.06);border-color:var(--line)}
+.nav-arrow{display:inline-flex;font-size:16px;line-height:1;transition:transform .3s var(--ease)}
+.btn-gold:hover .nav-arrow{transform:translateX(-4px)}
+.btn-ghost-nav:hover .nav-arrow-back{transform:translateX(4px)}
 .modal-actions{display:flex;gap:12px;margin-top:20px}
 .modal-actions .btn{flex:1;justify-content:center}
 .confirm-view{text-align:center;padding:10px 0}
@@ -324,10 +331,12 @@ footer{background:linear-gradient(180deg,var(--navy),#081222);color:#fff;padding
 .elig-inline-wizard::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--gold-light),var(--gold),var(--gold-light));z-index:1}
 .elig-inline-wizard.show{display:block;animation:wizardIn .55s var(--ease-bounce)}
 @keyframes wizardIn{from{opacity:0;transform:translateY(24px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
-.elig-inline-wizard .modal-header{border-bottom:1px solid var(--line);background:linear-gradient(135deg,rgba(47,111,237,.07),rgba(11,28,51,.02))}
-.elig-inline-wizard .modal-header h3{display:flex;align-items:center;gap:12px}
-.elig-inline-wizard .modal-header .icon-3d{width:36px;height:36px;flex:none}
+.elig-inline-wizard .modal-header{border-bottom:none;background:linear-gradient(135deg,var(--navy),var(--navy-2) 55%,var(--gold) 150%)}
+.elig-inline-wizard .modal-header h3{display:flex;align-items:center;gap:12px;color:#fff}
+.elig-inline-wizard .modal-header .icon-3d{width:36px;height:36px;flex:none;background:rgba(255,255,255,.15)}
 .elig-inline-wizard .modal-header .icon-3d svg{width:18px;height:18px}
+.elig-inline-wizard .modal-header .modal-close{color:#fff;background:rgba(255,255,255,.15)}
+.elig-inline-wizard .modal-header .modal-close:hover{background:rgba(255,255,255,.28)}
 .elig-inline-wizard .modal-body{padding:24px}
 .stage-progress{display:flex;align-items:center;margin-bottom:18px;padding:0 4px}
 .stage-dot{position:relative;flex:1;height:28px;display:flex;align-items:center;justify-content:center}
@@ -345,8 +354,9 @@ footer{background:linear-gradient(180deg,var(--navy),#081222);color:#fff;padding
 @keyframes stageIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 .choice-group{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
 .choice-chip{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:50px;border:1.5px solid var(--line);font-size:13px;font-weight:700;color:var(--ink-soft);cursor:pointer;transition:.25s var(--ease);user-select:none}
-.choice-chip:hover{border-color:var(--gold)}
-.choice-chip.selected{border-color:var(--gold);background:linear-gradient(135deg,var(--gold-light),var(--gold));color:#fff}
+.choice-chip:hover{border-color:var(--gold);background:rgba(47,111,237,.06)}
+.choice-chip.selected{border-color:var(--gold);background:linear-gradient(135deg,var(--gold-light),var(--gold));color:#fff;box-shadow:0 8px 18px rgba(47,111,237,.3)}
+.choice-chip.selected::before{content:'✓';font-size:12px;font-weight:800}
 .cond-block{max-height:0;overflow:hidden;opacity:0;transition:max-height .45s var(--ease),opacity .3s var(--ease)}
 .cond-block.show{max-height:1000px;opacity:1;margin-top:14px}
 .form-group.field-error input,.form-group.field-error select,.form-group.field-error textarea{border-color:#E4483D !important;animation:fieldShake .4s}
@@ -401,6 +411,7 @@ footer{background:linear-gradient(180deg,var(--navy),#081222);color:#fff;padding
 .modal-actions{flex-direction:column}
 .modal-actions .btn{width:100%}
 .choice-chip{padding:8px 13px;font-size:12.5px}
+.form-row{grid-template-columns:1fr;gap:12px}
 .stage-progress{gap:4px}
 .stage-label{font-size:11.5px}
 .elig-need-chip{padding:8px 14px;font-size:12px}
