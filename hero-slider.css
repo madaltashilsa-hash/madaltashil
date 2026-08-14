@@ -1,158 +1,266 @@
 /* =========================================================================
-   مدى التسهيل للتجارة — Hero Slider (MT Slider)
-   عرض كامل الشاشة · التصميم يظهر كاملًا بلا اقتطاع · تأثيرات حركية وبصرية
+   مدى التسهيل للتجارة — MT Hero Slider
+   إخراج سينمائي · خلفية متغيّرة مع كل شريحة · تأثيرات دخول وخروج
+   التصميم يظهر كاملًا بلا اقتطاع على كل الشاشات والمتصفحات
    ========================================================================= */
 
 .mt-slider{
-  --mts-dur:.8s;
+  --mts-swap:.9s;                                  /* مدة الدخول/الخروج */
   --mts-ease:cubic-bezier(.22,.9,.32,1);
+  --mts-radius:clamp(14px,1.5vw,26px);
+
   position:relative;
+  display:block;
   overflow:hidden;
   isolation:isolate;
-  background:#0b1c33;
-  display:block;
 
-  /* كامل الشاشة من الجانبين يمين ويسار */
+  /* شريط كامل العرض من الجانبين يمين ويسار */
   width:100vw;
   left:50%;right:50%;
   margin-left:-50vw;margin-right:-50vw;
 
-  /* نسبة وسطية بين مقاسي التصاميم (1.50 و 1.78) لتقليل الحواف */
-  aspect-ratio:1.62;
-  height:auto;
-  max-height:min(82vh,860px);
+  /* تباعد مريح يفصل السلايدر عن الأقسام المجاورة */
+  padding:clamp(34px,4.6vw,76px) 0 clamp(26px,3.4vw,54px);
+
+  background:linear-gradient(180deg,#0a1830 0%,#0d2145 45%,#0a1830 100%);
+  -webkit-tap-highlight-color:transparent;
 }
 
-/* ---------- الشرائح ---------- */
+/* خط فاصل رفيع يفصل الشريط عن الأقسام المجاورة */
+.mt-slider::before,
+.mt-slider::after{
+  content:"";position:absolute;left:0;right:0;height:1px;z-index:4;pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(127,178,255,.40),transparent);
+}
+.mt-slider::before{top:0}
+.mt-slider::after{bottom:0}
+
+/* ===================== الخلفية السينمائية ===================== */
+.mts-bglayer{position:absolute;inset:0;z-index:0;overflow:hidden}
+
+.mts-amb{
+  position:absolute;inset:-8%;
+  width:116%;height:116%;
+  object-fit:cover;
+  opacity:0;
+  transform:scale(1.06);
+  filter:blur(60px) saturate(1.45) brightness(.62);
+  transition:opacity 1.15s var(--mts-ease),transform 12s linear;
+  will-change:opacity,transform;
+}
+.mts-amb.is-active{opacity:.85;transform:scale(1.16)}
+
+/* حجاب يوحّد التباين ويضمن وضوح البطاقة فوق أي لون */
+.mts-veil{
+  position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(120% 90% at 50% 40%,rgba(6,16,34,.18) 0%,rgba(6,16,34,.62) 62%,rgba(6,16,34,.86) 100%),
+    linear-gradient(180deg,rgba(8,19,40,.92) 0%,rgba(8,19,40,.30) 18%,rgba(8,19,40,.30) 82%,rgba(8,19,40,.92) 100%);
+}
+/* حبيبات خفيفة جدًا تعطي ملمسًا سينمائيًا وتمنع تكسّر التدرّجات */
+.mts-grain{
+  position:absolute;inset:0;pointer-events:none;opacity:.16;
+  background-image:radial-gradient(rgba(255,255,255,.5) .5px,transparent .6px);
+  background-size:3px 3px;
+  mix-blend-mode:overlay;
+}
+
+/* ===================== إطار البطاقة ===================== */
+.mts-frame{
+  position:relative;z-index:2;
+  /* العرض محكوم بالطول أيضًا حتى لا يبتلع السلايدر الشاشة على أي جهاز */
+  width:min(1180px,92vw,82vh);
+  margin:0 auto;
+  /* تأثير دخول القسم عند التمرير */
+  opacity:0;transform:translateY(38px) scale(.972);
+  transition:opacity .9s var(--mts-ease),transform 1s var(--mts-ease);
+}
+.mt-slider.is-in .mts-frame{opacity:1;transform:none}
+
+.mts-stage{
+  position:relative;
+  width:100%;
+  aspect-ratio:1.62;      /* ثابتة على كل الشرائح → لا يحدث أي قفز في الصفحة */
+  border-radius:var(--mts-radius);
+  overflow:hidden;
+  background:#0b1c33;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.10),
+    0 30px 70px rgba(0,0,0,.50),
+    0 8px 24px rgba(0,0,0,.32);
+}
+/* بديل لنسبة العرض على المتصفحات القديمة */
+@supports not (aspect-ratio:1/1){
+  .mts-stage{height:0;padding-bottom:61.7%}
+}
+
 .mts-viewport{position:absolute;inset:0}
+
+/* ===================== الشرائح: دخول وخروج ===================== */
 .mts-slide{
   position:absolute;inset:0;display:block;
   opacity:0;visibility:hidden;
-  transition:opacity var(--mts-dur) var(--mts-ease),visibility 0s linear var(--mts-dur);
   z-index:1;
-  -webkit-tap-highlight-color:transparent;
 }
-.mts-slide.is-active{opacity:1;visibility:visible;z-index:2;transition-delay:0s,0s}
-
-/* الطبقة الخلفية: نفس الصورة مموّهة لملء أي فراغ جانبي بلون التصميم نفسه */
-.mts-amb{
-  position:absolute;inset:0;width:100%;height:100%;
+/* نسخة مموّهة داخل البطاقة تملأ أي فراغ ناتج عن اختلاف مقاسات التصاميم */
+.mts-fill{
+  position:absolute;inset:-4%;
+  width:108%;height:108%;
   object-fit:cover;
-  filter:blur(46px) saturate(1.25) brightness(.86);
-  transform:scale(1.22);
-  transition:transform 11s linear;
-  will-change:transform;
-  pointer-events:none;
+  filter:blur(24px) saturate(1.3) brightness(.92);
+  transform:scale(1.04);
+  z-index:1;
 }
-.mts-slide.is-active .mts-amb{transform:scale(1.34)}
-
-/* الطبقة الأمامية: التصميم كاملًا بدون أي اقتطاع */
 .mts-img{
-  position:absolute;inset:0;width:100%;height:100%;
-  object-fit:contain;
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  object-fit:contain;                 /* التصميم كاملًا — لا اقتطاع إطلاقًا */
   object-position:center;
   z-index:2;
-  opacity:0;transform:translateY(16px) scale(.988);
-  filter:blur(4px);
-  transition:none;
   user-select:none;-webkit-user-drag:none;
 }
-.mts-slide.is-active .mts-img{animation:mtsIn .85s .06s var(--mts-ease) both}
-@keyframes mtsIn{to{opacity:1;transform:none;filter:blur(0)}}
 
-/* لمعة تمر على التصميم عند ظهوره */
-.mts-slide::after{
-  content:"";position:absolute;inset:0;pointer-events:none;z-index:3;
-  background:linear-gradient(105deg,rgba(255,255,255,0) 40%,rgba(255,255,255,.22) 50%,rgba(255,255,255,0) 60%);
-  transform:translateX(-125%);opacity:0}
-.mts-slide.is-active::after{animation:mtsSheen 1.6s .3s var(--mts-ease) both}
-@keyframes mtsSheen{0%{transform:translateX(-125%);opacity:0}
-  20%{opacity:.85}100%{transform:translateX(125%);opacity:0}}
-
-/* ---------- الأسهم ---------- */
-.mts-arrow{
-  position:absolute;top:50%;transform:translateY(-50%);z-index:6;
-  width:clamp(40px,3.1vw,54px);height:clamp(40px,3.1vw,54px);border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  background:rgba(255,255,255,.86);color:#0B1C33;
-  box-shadow:0 10px 28px rgba(6,16,34,.35);
-  backdrop-filter:blur(8px);
-  transition:transform .3s var(--mts-ease),background .3s,color .3s,opacity .35s;
-  opacity:0;
+/* الشريحة الداخلة */
+.mts-slide.is-active{
+  visibility:visible;z-index:3;
+  animation:mtsEnter var(--mts-swap) var(--mts-ease) both;
 }
-.mt-slider:hover .mts-arrow,.mt-slider:focus-within .mts-arrow{opacity:1}
-.mts-arrow:hover{background:#2F6FED;color:#fff;transform:translateY(-50%) scale(1.09)}
-.mts-arrow svg{width:42%;height:42%;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
-.mts-arrow.prev{right:clamp(10px,1.4vw,26px)}
-.mts-arrow.next{left:clamp(10px,1.4vw,26px)}
+/* الشريحة الخارجة */
+.mts-slide.is-leaving{
+  visibility:visible;z-index:2;
+  animation:mtsLeave var(--mts-swap) var(--mts-ease) both;
+}
 
-/* ---------- النقاط ---------- */
+@keyframes mtsEnter{
+  from{opacity:0;transform:translateX(var(--enter-x,4%)) scale(1.045);filter:blur(9px)}
+  60%{opacity:1}
+  to{opacity:1;transform:none;filter:blur(0)}
+}
+@keyframes mtsLeave{
+  from{opacity:1;transform:none;filter:blur(0)}
+  to{opacity:0;transform:translateX(var(--leave-x,-4%)) scale(.965);filter:blur(7px)}
+}
+/* اتجاه الحركة يتبع اتجاه التنقّل (الموقع RTL) */
+.mt-slider[data-dir="next"] .mts-slide{--enter-x:-5%;--leave-x:5%}
+.mt-slider[data-dir="prev"] .mts-slide{--enter-x:5%;--leave-x:-5%}
+
+/* لمعة تمر على التصميم عند دخوله */
+.mts-slide::after{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:4;
+  background:linear-gradient(105deg,rgba(255,255,255,0) 42%,rgba(255,255,255,.20) 50%,rgba(255,255,255,0) 58%);
+  transform:translateX(-130%);opacity:0;
+}
+.mts-slide.is-active::after{animation:mtsSheen 1.5s .35s var(--mts-ease) both}
+@keyframes mtsSheen{
+  0%{transform:translateX(-130%);opacity:0}
+  18%{opacity:.9}
+  100%{transform:translateX(130%);opacity:0}
+}
+
+/* ===================== الأسهم (خارج البطاقة) ===================== */
+.mts-arrow{
+  position:absolute;top:50%;transform:translateY(-50%);z-index:5;
+  width:clamp(42px,3.2vw,56px);height:clamp(42px,3.2vw,56px);
+  border:0;border-radius:50%;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;
+  background:rgba(255,255,255,.12);
+  box-shadow:0 10px 30px rgba(0,0,0,.35),inset 0 0 0 1px rgba(255,255,255,.24);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  opacity:0;
+  transition:transform .35s var(--mts-ease),background .3s,color .3s,opacity .4s var(--mts-ease);
+}
+.mt-slider:hover .mts-arrow,
+.mt-slider:focus-within .mts-arrow{opacity:1}
+.mts-arrow:hover{
+  background:linear-gradient(135deg,#7FB2FF,#2F6FED);
+  box-shadow:0 14px 34px rgba(47,111,237,.55),inset 0 0 0 1px rgba(255,255,255,.4);
+  transform:translateY(-50%) scale(1.1);
+}
+.mts-arrow svg{width:40%;height:40%;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.mts-arrow.prev{right:calc(-1 * clamp(52px,4.4vw,74px))}
+.mts-arrow.next{left:calc(-1 * clamp(52px,4.4vw,74px))}
+
+/* عند ضيق المساحة الجانبية تُوضع الأسهم فوق حواف البطاقة */
+@media (max-width:1500px){
+  .mts-arrow.prev{right:clamp(10px,1.2vw,18px)}
+  .mts-arrow.next{left:clamp(10px,1.2vw,18px)}
+}
+
+/* ===================== النقاط (أسفل البطاقة) ===================== */
 .mts-dots{
-  position:absolute;z-index:6;bottom:clamp(14px,1.6vw,26px);
-  left:0;right:0;display:flex;gap:9px;justify-content:center;align-items:center;
+  position:relative;z-index:3;
+  display:flex;gap:10px;justify-content:center;align-items:center;
+  margin-top:clamp(18px,2vw,30px);
 }
 .mts-dot{
-  width:9px;height:9px;border-radius:99px;padding:0;border:0;cursor:pointer;
-  background:rgba(255,255,255,.45);box-shadow:0 2px 8px rgba(0,0,0,.35);
-  transition:all .4s var(--mts-ease);
+  position:relative;
+  width:10px;height:10px;padding:0;border:0;cursor:pointer;
+  border-radius:99px;overflow:hidden;
+  background:rgba(255,255,255,.28);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);
+  transition:width .55s var(--mts-ease),background .4s;
 }
-.mts-dot.is-active{width:32px;background:linear-gradient(90deg,#fff,#7FB2FF)}
-
-/* ---------- شريط التقدم ---------- */
-.mts-progress{position:absolute;left:0;right:0;bottom:0;height:3px;z-index:6;background:rgba(255,255,255,.16)}
-.mts-progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,#7FB2FF,#2F6FED)}
-
-/* ---------- عدّاد الشرائح ---------- */
-.mts-count{
-  position:absolute;z-index:6;bottom:clamp(12px,1.5vw,24px);left:clamp(16px,2vw,30px);
-  font-size:13px;font-weight:800;letter-spacing:1px;color:#fff;opacity:.72;
-  font-variant-numeric:tabular-nums;direction:ltr;
-  text-shadow:0 2px 10px rgba(0,0,0,.45);
+.mts-dot:hover{background:rgba(255,255,255,.5)}
+.mts-dot.is-active{width:clamp(46px,5vw,64px);background:rgba(255,255,255,.24)}
+/* النقطة النشطة نفسها هي شريط التقدّم */
+.mts-dot i{
+  position:absolute;inset:0;width:0;
+  border-radius:99px;
+  background:linear-gradient(90deg,#7FB2FF,#ffffff);
+  transition:width .12s linear;
 }
+.mts-dot:not(.is-active) i{width:0 !important}
 
-/* =========================================================================
-   الأجهزة اللوحية
-   ========================================================================= */
+/* ===================== الشاشات المتوسطة ===================== */
 @media (max-width:1024px){
-  .mt-slider{max-height:62vh}
-  .mts-amb{filter:blur(34px) saturate(1.2) brightness(.88)}
+  .mt-slider{padding:clamp(28px,4vw,52px) 0 clamp(22px,3vw,40px)}
+  .mts-frame{width:min(94vw,86vh)}
+  .mts-amb{filter:blur(44px) saturate(1.4) brightness(.64)}
 }
 
-/* =========================================================================
-   مقاسات خاصة للجوالات — التصميم يملأ العرض كاملًا بلا اقتطاع
-   ========================================================================= */
+/* ===================== الجوالات ===================== */
 @media (max-width:768px){
   .mt-slider{
-    aspect-ratio:1.62;
-    max-height:none;
-    background:#0b1c33;
+    --mts-swap:.75s;
+    --mts-radius:14px;
+    padding:26px 0 20px;
   }
-  .mts-amb{filter:blur(22px) saturate(1.25) brightness(.82);transform:scale(1.3)}
-  .mts-slide.is-active .mts-amb{transform:scale(1.38)}
-  .mts-dots{bottom:9px;gap:7px}
-  .mts-dot{width:7px;height:7px}
-  .mts-dot.is-active{width:24px}
-  .mts-count{display:none}
-  .mts-slide::after{animation-duration:1.2s}
+  .mts-frame{width:calc(100% - 28px);transform:translateY(24px) scale(.98)}
+  .mt-slider.is-in .mts-frame{transform:none}
+  .mts-stage{box-shadow:0 18px 40px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.10)}
+  .mts-amb{filter:blur(30px) saturate(1.4) brightness(.6)}
+  .mts-fill{filter:blur(16px) saturate(1.3) brightness(.94)}
+  .mts-grain{opacity:.1}
+  .mts-dots{margin-top:16px;gap:8px}
+  .mts-dot{width:8px;height:8px}
+  .mts-dot.is-active{width:38px}
 }
 
-/* على الأجهزة اللمسية نخفي الأسهم حتى لا تغطي التصميم — السحب والنقاط تكفي */
+@media (max-width:400px){
+  .mt-slider{padding:20px 0 16px}
+  .mts-frame{width:calc(100% - 20px)}
+  .mts-dots{margin-top:13px}
+}
+
+/* على الأجهزة اللمسية تُخفى الأسهم — السحب والنقاط أنسب ولا تغطّي التصميم */
 @media (hover:none),(pointer:coarse){
   .mts-arrow{display:none}
 }
 
-@media (max-width:420px){
-  .mts-dots{bottom:7px}
+/* ===================== إتاحة الوصول / تقليل الحركة ===================== */
+@media (prefers-reduced-motion:reduce){
+  .mts-amb{transition:opacity .3s linear;transform:scale(1.08) !important}
+  .mts-frame{opacity:1;transform:none;transition:none}
+  .mts-slide.is-active,
+  .mts-slide.is-leaving{animation:none}
+  .mts-slide.is-active{opacity:1;visibility:visible}
+  .mts-slide.is-leaving{opacity:0;visibility:hidden}
+  .mts-slide.is-active::after{animation:none}
+  .mts-stage{transition:none}
 }
 
-/* =========================================================================
-   إتاحة الوصول / تقليل الحركة
-   ========================================================================= */
-@media (prefers-reduced-motion:reduce){
-  .mts-amb,.mts-slide.is-active .mts-amb{transition:none;transform:scale(1.22)}
-  .mts-slide.is-active .mts-img{animation:none;opacity:1;transform:none;filter:none}
-  .mts-slide.is-active::after{animation:none}
-  .mts-slide{transition-duration:.01s}
-}
-.mt-slider:focus-visible,.mts-slide:focus-visible,.mts-arrow:focus-visible,.mts-dot:focus-visible{
-  outline:3px solid #7FB2FF;outline-offset:-4px}
+.mt-slider:focus-visible,
+.mts-slide:focus-visible,
+.mts-arrow:focus-visible,
+.mts-dot:focus-visible{outline:3px solid #7FB2FF;outline-offset:4px}
