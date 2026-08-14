@@ -264,3 +264,12 @@
 .mts-slide:focus-visible,
 .mts-arrow:focus-visible,
 .mts-dot:focus-visible{outline:3px solid #7FB2FF;outline-offset:4px}
+
+/* تباعد إضافي للسلايدر الأول عن الأقسام أعلاه وأسفله */
+.mt-slider.mt-slider-roomy{
+  padding:clamp(52px,6.4vw,104px) 0 clamp(44px,5vw,80px);
+  margin-block:clamp(10px,1.6vw,26px);
+}
+@media (max-width:768px){
+  .mt-slider.mt-slider-roomy{padding:38px 0 32px;margin-block:8px}
+}
