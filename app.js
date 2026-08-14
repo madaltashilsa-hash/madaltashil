@@ -932,8 +932,8 @@ var html=''
 +'</div>'
 +'</div>'
 +'</section>';
-var introSec=document.getElementById('intro-video');
-if(introSec&&introSec.parentNode){introSec.insertAdjacentHTML('afterend',html);}
+var anchor=document.getElementById('elig-anchor')||document.getElementById('intro-video');
+if(anchor&&anchor.parentNode){anchor.insertAdjacentHTML('afterend',html);}
 else{var main=document.querySelector('main');if(main)main.insertAdjacentHTML('afterbegin',html);}
 }
 function injectModals(){

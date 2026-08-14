@@ -22,6 +22,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="hero-slider.css">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"Organization","name":"شركة مدى التسهيل للتجارة","alternateName":"مدى التسهيل للتجارة","url":"https://madaltashilsa-hash.github.io/madaltashil/","logo":"https://madaltashilsa-hash.github.io/madaltashil/assets/logo.png","telephone":"+966556280382","email":"support@madaltashil.com","address":{"@type":"PostalAddress","addressCountry":"SA"}}
 </script>
@@ -60,6 +61,18 @@
 </nav>
 </aside>
 <main>
+<!-- ===== 1) الفيديو التعريفي — أول الصفحة بعد الهيدر ===== -->
+<section id="intro-video" class="section intro-video-top">
+<div class="container">
+<div class="intro-video-frame">
+<iframe src="intro-video.html" title="فيديو تعريفي - مدى التسهيل للتجارة" loading="lazy" allow="autoplay" class="intro-video-iframe"></iframe>
+</div>
+</div>
+</section>
+
+<!-- ===== سلايدر 1 — 4 شرائح ===== -->
+<div class="mt-slider" data-slider="a"></div>
+
 <section id="home">
 <div class="container hero-inner reveal">
 <span class="eyebrow">مدى التسهيل للتجارة</span>
@@ -72,13 +85,13 @@
 </div>
 </section>
 
-<section id="intro-video" class="section">
-<div class="container">
-<div class="intro-video-frame">
-<iframe src="intro-video.html" title="فيديو تعريفي - مدى التسهيل للتجارة" loading="lazy" allow="autoplay" class="intro-video-iframe"></iframe>
-</div>
-</div>
-</section>
+<!-- ===== سلايدر 2 — 3 شرائح ===== -->
+<div class="mt-slider" data-slider="b"></div>
+<div id="elig-anchor" aria-hidden="true"></div>
+
+<!-- ===== سلايدر 3 — 4 شرائح (بعد قسم الأهلية) ===== -->
+<div class="mt-slider" data-slider="c"></div>
+
 
 <section id="about" class="section section-alt">
 <div class="container">
@@ -95,6 +108,9 @@
 </div>
 </div>
 </section>
+
+<!-- ===== سلايدر 4 — 3 شرائح ===== -->
+<div class="mt-slider" data-slider="d"></div>
 
 <section id="google-rating" class="section">
 <div class="container">
@@ -275,6 +291,7 @@
 </div>
 </div>
 
+<script src="hero-slider.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

@@ -1,0 +1,158 @@
+/* =========================================================================
+   مدى التسهيل للتجارة — Hero Slider (MT Slider)
+   عرض كامل الشاشة · التصميم يظهر كاملًا بلا اقتطاع · تأثيرات حركية وبصرية
+   ========================================================================= */
+
+.mt-slider{
+  --mts-dur:.8s;
+  --mts-ease:cubic-bezier(.22,.9,.32,1);
+  position:relative;
+  overflow:hidden;
+  isolation:isolate;
+  background:#0b1c33;
+  display:block;
+
+  /* كامل الشاشة من الجانبين يمين ويسار */
+  width:100vw;
+  left:50%;right:50%;
+  margin-left:-50vw;margin-right:-50vw;
+
+  /* نسبة وسطية بين مقاسي التصاميم (1.50 و 1.78) لتقليل الحواف */
+  aspect-ratio:1.62;
+  height:auto;
+  max-height:min(82vh,860px);
+}
+
+/* ---------- الشرائح ---------- */
+.mts-viewport{position:absolute;inset:0}
+.mts-slide{
+  position:absolute;inset:0;display:block;
+  opacity:0;visibility:hidden;
+  transition:opacity var(--mts-dur) var(--mts-ease),visibility 0s linear var(--mts-dur);
+  z-index:1;
+  -webkit-tap-highlight-color:transparent;
+}
+.mts-slide.is-active{opacity:1;visibility:visible;z-index:2;transition-delay:0s,0s}
+
+/* الطبقة الخلفية: نفس الصورة مموّهة لملء أي فراغ جانبي بلون التصميم نفسه */
+.mts-amb{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;
+  filter:blur(46px) saturate(1.25) brightness(.86);
+  transform:scale(1.22);
+  transition:transform 11s linear;
+  will-change:transform;
+  pointer-events:none;
+}
+.mts-slide.is-active .mts-amb{transform:scale(1.34)}
+
+/* الطبقة الأمامية: التصميم كاملًا بدون أي اقتطاع */
+.mts-img{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:contain;
+  object-position:center;
+  z-index:2;
+  opacity:0;transform:translateY(16px) scale(.988);
+  filter:blur(4px);
+  transition:none;
+  user-select:none;-webkit-user-drag:none;
+}
+.mts-slide.is-active .mts-img{animation:mtsIn .85s .06s var(--mts-ease) both}
+@keyframes mtsIn{to{opacity:1;transform:none;filter:blur(0)}}
+
+/* لمعة تمر على التصميم عند ظهوره */
+.mts-slide::after{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:3;
+  background:linear-gradient(105deg,rgba(255,255,255,0) 40%,rgba(255,255,255,.22) 50%,rgba(255,255,255,0) 60%);
+  transform:translateX(-125%);opacity:0}
+.mts-slide.is-active::after{animation:mtsSheen 1.6s .3s var(--mts-ease) both}
+@keyframes mtsSheen{0%{transform:translateX(-125%);opacity:0}
+  20%{opacity:.85}100%{transform:translateX(125%);opacity:0}}
+
+/* ---------- الأسهم ---------- */
+.mts-arrow{
+  position:absolute;top:50%;transform:translateY(-50%);z-index:6;
+  width:clamp(40px,3.1vw,54px);height:clamp(40px,3.1vw,54px);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.86);color:#0B1C33;
+  box-shadow:0 10px 28px rgba(6,16,34,.35);
+  backdrop-filter:blur(8px);
+  transition:transform .3s var(--mts-ease),background .3s,color .3s,opacity .35s;
+  opacity:0;
+}
+.mt-slider:hover .mts-arrow,.mt-slider:focus-within .mts-arrow{opacity:1}
+.mts-arrow:hover{background:#2F6FED;color:#fff;transform:translateY(-50%) scale(1.09)}
+.mts-arrow svg{width:42%;height:42%;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.mts-arrow.prev{right:clamp(10px,1.4vw,26px)}
+.mts-arrow.next{left:clamp(10px,1.4vw,26px)}
+
+/* ---------- النقاط ---------- */
+.mts-dots{
+  position:absolute;z-index:6;bottom:clamp(14px,1.6vw,26px);
+  left:0;right:0;display:flex;gap:9px;justify-content:center;align-items:center;
+}
+.mts-dot{
+  width:9px;height:9px;border-radius:99px;padding:0;border:0;cursor:pointer;
+  background:rgba(255,255,255,.45);box-shadow:0 2px 8px rgba(0,0,0,.35);
+  transition:all .4s var(--mts-ease);
+}
+.mts-dot.is-active{width:32px;background:linear-gradient(90deg,#fff,#7FB2FF)}
+
+/* ---------- شريط التقدم ---------- */
+.mts-progress{position:absolute;left:0;right:0;bottom:0;height:3px;z-index:6;background:rgba(255,255,255,.16)}
+.mts-progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,#7FB2FF,#2F6FED)}
+
+/* ---------- عدّاد الشرائح ---------- */
+.mts-count{
+  position:absolute;z-index:6;bottom:clamp(12px,1.5vw,24px);left:clamp(16px,2vw,30px);
+  font-size:13px;font-weight:800;letter-spacing:1px;color:#fff;opacity:.72;
+  font-variant-numeric:tabular-nums;direction:ltr;
+  text-shadow:0 2px 10px rgba(0,0,0,.45);
+}
+
+/* =========================================================================
+   الأجهزة اللوحية
+   ========================================================================= */
+@media (max-width:1024px){
+  .mt-slider{max-height:62vh}
+  .mts-amb{filter:blur(34px) saturate(1.2) brightness(.88)}
+}
+
+/* =========================================================================
+   مقاسات خاصة للجوالات — التصميم يملأ العرض كاملًا بلا اقتطاع
+   ========================================================================= */
+@media (max-width:768px){
+  .mt-slider{
+    aspect-ratio:1.62;
+    max-height:none;
+    background:#0b1c33;
+  }
+  .mts-amb{filter:blur(22px) saturate(1.25) brightness(.82);transform:scale(1.3)}
+  .mts-slide.is-active .mts-amb{transform:scale(1.38)}
+  .mts-dots{bottom:9px;gap:7px}
+  .mts-dot{width:7px;height:7px}
+  .mts-dot.is-active{width:24px}
+  .mts-count{display:none}
+  .mts-slide::after{animation-duration:1.2s}
+}
+
+/* على الأجهزة اللمسية نخفي الأسهم حتى لا تغطي التصميم — السحب والنقاط تكفي */
+@media (hover:none),(pointer:coarse){
+  .mts-arrow{display:none}
+}
+
+@media (max-width:420px){
+  .mts-dots{bottom:7px}
+}
+
+/* =========================================================================
+   إتاحة الوصول / تقليل الحركة
+   ========================================================================= */
+@media (prefers-reduced-motion:reduce){
+  .mts-amb,.mts-slide.is-active .mts-amb{transition:none;transform:scale(1.22)}
+  .mts-slide.is-active .mts-img{animation:none;opacity:1;transform:none;filter:none}
+  .mts-slide.is-active::after{animation:none}
+  .mts-slide{transition-duration:.01s}
+}
+.mt-slider:focus-visible,.mts-slide:focus-visible,.mts-arrow:focus-visible,.mts-dot:focus-visible{
+  outline:3px solid #7FB2FF;outline-offset:-4px}

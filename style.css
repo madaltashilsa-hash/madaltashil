@@ -451,3 +451,9 @@ footer{background:linear-gradient(180deg,var(--navy),#081222);color:#fff;padding
 @media (max-width:420px){
   .hours-footer-grid{grid-template-columns:1fr}
 }
+
+/* ===== الفيديو التعريفي في أول الصفحة (بعد الهيدر) ===== */
+.intro-video-top{padding:30px 0 40px;background:linear-gradient(180deg,#f7fafe,var(--off-white))}
+.intro-video-top .intro-video-frame{max-width:1080px;border-radius:18px}
+@media (max-width:768px){.intro-video-top{padding:16px 0 22px}
+.intro-video-top .intro-video-frame{border-radius:14px}}
