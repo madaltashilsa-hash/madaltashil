@@ -24,6 +24,7 @@
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="hero-slider.css">
 <link rel="stylesheet" href="pages.css">
+<link rel="stylesheet" href="mt-video.css">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"Organization","name":"شركة مدى التسهيل للتجارة","alternateName":"مدى التسهيل للتجارة","url":"https://madaltashilsa-hash.github.io/madaltashil/","logo":"https://madaltashilsa-hash.github.io/madaltashil/assets/logo.png","telephone":"+966556280382","email":"support@madaltashil.com","address":{"@type":"PostalAddress","addressCountry":"SA"}}
 </script>
@@ -63,14 +64,8 @@
 </nav>
 </aside>
 <main>
-<!-- ===== 1) الفيديو التعريفي — أول الصفحة بعد الهيدر ===== -->
-<section id="intro-video" class="section intro-video-top">
-<div class="container">
-<div class="intro-video-frame">
-<iframe src="intro-video.html" title="فيديو تعريفي - مدى التسهيل للتجارة" loading="lazy" allow="autoplay" class="intro-video-iframe"></iframe>
-</div>
-</div>
-</section>
+<!-- ===== فيديو 1 — بعد الهيدر مباشرة ===== -->
+<section id="video-brand" class="mtv-section mtv-tint" data-mtv="brand"></section>
 
 <!-- ===== سلايدر 1 — 4 شرائح ===== -->
 <div class="mt-slider mt-slider-roomy" data-slider="a"></div>
@@ -107,6 +102,9 @@
 </div>
 </section>
 
+<!-- ===== فيديو 2 — أحدث الجوالات ===== -->
+<section id="video-phones" class="mtv-section" data-mtv="phones"></section>
+
 <!-- ===== سلايدر 3 — 4 شرائح (بعد قسم الأهلية) ===== -->
 <div class="mt-slider" data-slider="c"></div>
 
@@ -126,6 +124,9 @@
 </div>
 </div>
 </section>
+<!-- ===== فيديو 3 — الأجهزة اللوحية ===== -->
+<section id="video-tablets" class="mtv-section mtv-tint" data-mtv="tablets"></section>
+
 <!-- ===== سلايدر 2 — 3 شرائح (قبل التقييم) ===== -->
 <div class="mt-slider" data-slider="b"></div>
 
@@ -219,6 +220,9 @@
 </div>
 </section>
 
+<!-- ===== فيديو 4 — الساعات والصوتيات ===== -->
+<section id="video-wearables" class="mtv-section" data-mtv="wearables"></section>
+
 <!-- ===== سلايدر 4 — 3 شرائح (بعد التقييم) ===== -->
 <div class="mt-slider" data-slider="d"></div>
 
@@ -311,6 +315,7 @@
 </div>
 </div>
 
+<script src="mt-video.js" defer></script>
 <script src="hero-slider.js"></script>
 <script src="app.js"></script>
 <script src="pages.js"></script>
