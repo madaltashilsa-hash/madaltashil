@@ -3,6 +3,14 @@
 "use strict";
 var WA_NUMBER="966556280382";
 function waLink(text){return "https://wa.me/"+WA_NUMBER+"?text="+encodeURIComponent(text);}
+/* goWhatsApp(): يمرّر الرابط إلى نافذة «جاري تحويلكم لرعاية خدمة العملاء»
+   ذات العدّاد التنازلي (mt-wa.js)، ويعود للسلوك القديم إن لم يكن محمّلاً. */
+function goWhatsApp(url,afterClose){
+if(typeof afterClose==='function')afterClose();
+if(window.MTWA&&typeof window.MTWA.go==='function'){window.MTWA.go(url);return;}
+var w=window.open(url,'_blank');if(!w)window.location.href=url;
+}
+
 var ICONS={
 home:'<path d="M4 11L12 4l8 7"/><path d="M6 10v9h5v-5h2v5h5v-9"/>',
 business:'<rect x="3" y="8" width="18" height="11" rx="2"/><path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M3 13h18"/>',
@@ -28,6 +36,7 @@ magic:'<circle cx="10" cy="10" r="6"/><path d="M20 20l-5.5-5.5"/><path d="M10 7v
 verify:'<path d="M12 2l7 3v6c0 5-3 8-7 11-4-3-7-6-7-11V5z"/><path d="M9 12l2 2 4-4"/>',
 mail:'<rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 6l10 7 10-7"/>',
 phone:'<path d="M5 4h4l1.5 4.5L8 10.5a12 12 0 0 0 5.5 5.5l1.5-2.5L19.5 15V19a2 2 0 0 1-2 2C10 21 3 14 3 6a2 2 0 0 1 2-2z"/>',
+clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>',
 whatsapp:'<path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2z"/><path d="M8.4 7.6c.2-.5.4-.5.6-.5h.5c.2 0 .4 0 .6.4.2.5.7 1.7.7 1.9.1.2.1.3 0 .5-.1.2-.2.3-.3.5-.2.2-.3.3-.1.6.2.4.9 1.4 1.9 2.3 1.3 1.1 2.3 1.5 2.7 1.6.3.1.5.1.7-.1.2-.2.7-.8.9-1.1.2-.3.4-.2.6-.1.2.1 1.6.8 1.9 1 .3.1.5.2.5.3 0 .2 0 1-.4 1.5-.4.5-1.4 1-2.2 1-1.7 0-3.7-.8-5.3-2.2-1.7-1.5-2.8-3.2-3.1-4.4-.2-.7-.3-1.4.1-2z"/>',
 search:'<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>',
 user:'<circle cx="12" cy="8" r="3.2"/><path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6"/>',
@@ -219,7 +228,6 @@ switchView('inquiryModal','confirm');
 });
 if(cancelConfirmBtn)cancelConfirmBtn.addEventListener('click',function(){switchView('inquiryModal','form');});
 if(confirmBtn)confirmBtn.addEventListener('click',function(){
-switchView('inquiryModal','sending');var waWin=window.open('','_blank');
 var name=document.getElementById('iName').value.trim();
 var phone=document.getElementById('iPhone').value.trim();
 var subject=document.getElementById('iSubject').value.trim()||'استفسار عام';
@@ -229,10 +237,7 @@ var msg='استفسار عام - مدى التسهيل للتجارة\n'+
 'رقم الجوال: '+phone+'\n'+
 'موضوع الاستفسار: '+subject+'\n'+
 'الاستفسار: '+message;
-setTimeout(function(){
-if(waWin){waWin.location.href=waLink(msg);}else{window.open(waLink(msg),'_blank');}
-closeModal('inquiryModal');
-},5000);
+goWhatsApp(waLink(msg),function(){closeModal('inquiryModal');});
 });
 }
 var JOB_STATUSES=[
@@ -863,15 +868,10 @@ switchView('eligibilityModal','wizard');
 showStage(1);
 return;
 }
-switchView('eligibilityModal','sending');
-var waWin=window.open('','_blank');
 var msg=buildWhatsAppMessage();
 var link=waLink(msg);
 clearDraft();
-setTimeout(function(){
-if(waWin){waWin.location.href=link;}else{window.open(link,'_blank');}
-closeModal('eligibilityModal');
-},5000);
+goWhatsApp(link,function(){closeModal('eligibilityModal');});
 }
 function initEligibilityFlow(){
 var startBtn=document.getElementById('startEligibilityBtn');
@@ -921,7 +921,7 @@ var html=''
 +'</div>'
 +'</div>'
 +'</section>';
-var anchor=document.getElementById('elig-anchor')||document.getElementById('intro-video');
+var anchor=document.getElementById('elig-anchor')||document.getElementById('video-brand');
 if(anchor&&anchor.parentNode){anchor.insertAdjacentHTML('afterend',html);}
 else{var main=document.querySelector('main');if(main)main.insertAdjacentHTML('afterbegin',html);}
 }
@@ -1020,13 +1020,8 @@ switchView('customRequestModal','confirm');
 });
 var confirmBtn=document.getElementById('crConfirm');
 if(confirmBtn)confirmBtn.addEventListener('click',function(){
-switchView('customRequestModal','sending');
-var waWin=window.open('','_blank');
 var msg=buildCustomRequestMessage();
-setTimeout(function(){
-if(waWin){waWin.location.href=waLink(msg);}else{window.open(waLink(msg),'_blank');}
-closeModal('customRequestModal');
-},5000);
+goWhatsApp(waLink(msg),function(){closeModal('customRequestModal');});
 });
 var cancelBtn=document.getElementById('crCancelConfirm');
 if(cancelBtn)cancelBtn.addEventListener('click',function(){switchView('customRequestModal','form');});

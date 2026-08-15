@@ -25,6 +25,7 @@
 <link rel="stylesheet" href="hero-slider.css">
 <link rel="stylesheet" href="pages.css">
 <link rel="stylesheet" href="mt-video.css">
+<link rel="stylesheet" href="mt-ui.css">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"Organization","name":"شركة مدى التسهيل للتجارة","alternateName":"مدى التسهيل للتجارة","url":"https://madaltashilsa-hash.github.io/madaltashil/","logo":"https://madaltashilsa-hash.github.io/madaltashil/assets/logo.png","telephone":"+966556280382","email":"support@madaltashil.com","address":{"@type":"PostalAddress","addressCountry":"SA"}}
 </script>
@@ -58,9 +59,10 @@
 <li><a class="nav-child-link" href="about.html#stats"><span class="icon-3d" data-icon="analytics"></span><span>أرقامنا</span></a></li>
 </ul>
 </li>
-<li class="nav-item"><a class="nav-link" href="#hours"><span class="icon-3d" data-icon="watch"></span><span>أوقات العمل</span></a></li><li class="nav-item"><a class="nav-link" href="#eligibility"><span class="icon-3d" data-icon="verify"></span><span>تحقق من أهليتك</span></a></li>
+<li class="nav-item"><a class="nav-link" href="#hours"><span class="icon-3d" data-icon="clock"></span><span>أوقات العمل</span></a></li><li class="nav-item"><a class="nav-link" href="#eligibility"><span class="icon-3d" data-icon="verify"></span><span>تحقق من أهليتك</span></a></li>
 <li class="nav-item"><a class="nav-link" href="eligibility-info.html"><span class="icon-3d" data-icon="target"></span><span>شروط الأهلية</span></a></li><li class="nav-item"><a class="nav-link" href="faq.html"><span class="icon-3d" data-icon="message"></span><span>الأسئلة الشائعة</span></a></li>
 </ul>
+<div class="sidebar-hours"><div class="sidebar-hours-head"><span class="icon-3d" data-icon="clock"></span><h4>أوقات العمل</h4></div><div class="sidebar-hours-row"><span>الأحد – الخميس صباحًا</span><span>9:00 ص – 12:00 ظ</span></div><div class="sidebar-hours-row"><span>الأحد – الخميس مساءً</span><span>4:00 ع – 12:00 م</span></div><div class="sidebar-hours-row"><span>السبت مساءً فقط</span><span>4:00 ع – 12:00 م</span></div><div class="sidebar-hours-row off"><span>الجمعة</span><span>إجازة رسمية</span></div></div>
 </nav>
 </aside>
 <main>
@@ -69,6 +71,10 @@
 
 <!-- ===== سلايدر 1 — 4 شرائح ===== -->
 <div class="mt-slider mt-slider-roomy" data-slider="a"></div>
+
+
+
+<div id="elig-anchor" aria-hidden="true"></div>
 
 <section id="home">
 <div class="container hero-inner reveal">
@@ -82,7 +88,8 @@
 </div>
 </section>
 
-<div id="elig-anchor" aria-hidden="true"></div>
+<!-- ===== فيديو 2 — أحدث الجوالات ===== -->
+<section id="video-phones" class="mtv-section" data-mtv="phones"></section>
 
 <!-- ===== الأسئلة الشائعة (أول 4 أسئلة) ===== -->
 <section class="section faq-section" id="faq">
@@ -101,9 +108,6 @@
 </div>
 </div>
 </section>
-
-<!-- ===== فيديو 2 — أحدث الجوالات ===== -->
-<section id="video-phones" class="mtv-section" data-mtv="phones"></section>
 
 <!-- ===== سلايدر 3 — 4 شرائح (بعد قسم الأهلية) ===== -->
 <div class="mt-slider" data-slider="c"></div>
@@ -220,11 +224,11 @@
 </div>
 </section>
 
-<!-- ===== فيديو 4 — الساعات والصوتيات ===== -->
-<section id="video-wearables" class="mtv-section" data-mtv="wearables"></section>
-
 <!-- ===== سلايدر 4 — 3 شرائح (بعد التقييم) ===== -->
 <div class="mt-slider" data-slider="d"></div>
+
+<!-- ===== فيديو 4 — الساعات والصوتيات ===== -->
+<section id="video-wearables" class="mtv-section" data-mtv="wearables"></section>
 
 </main>
 <footer>
@@ -315,6 +319,7 @@
 </div>
 </div>
 
+<script src="mt-wa.js" defer></script>
 <script src="mt-video.js" defer></script>
 <script src="hero-slider.js"></script>
 <script src="app.js"></script>

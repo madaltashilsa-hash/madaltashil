@@ -1,140 +1,265 @@
 /* =========================================================================
-   مدى التسهيل للتجارة — مشغّل الفيديوهات التعريفية
-   4 فيديوهات موزّعة على الصفحة · إعادة تلقائية · انتقال سلس
+   مدى التسهيل للتجارة — مشغّل الفيديوهات التعريفية (النسخة المطوّرة)
+   • النص أسفل الصورة دائمًا بمسافة آمنة — لا يغطّي الصورة إطلاقًا
+   • خمسة تأثيرات انتقال متناوبة + تأثير دخول للنص + وميض ضوئي
+   • إعادة تلقائية · مقاس مخصّص للجوال · إيقاف خارج الشاشة
    ========================================================================= */
 
 .mtv-section{
   --mtv-navy:#0B1C33;
+  --mtv-deep:#071527;
   --mtv-blue:#1D6FE0;
   --mtv-cyan:#26C6F5;
-  --mtv-cap:74px;              /* ارتفاع شريط التعليق على الجوال */
+  --mtv-cap:96px;                        /* ارتفاع شريط النص أسفل الصورة */
   position:relative;
-  padding:clamp(64px,7.5vw,112px) 0;
+  padding:clamp(72px,8vw,132px) 0;
   scroll-margin-top:96px;
   isolation:isolate;
 }
-.mtv-section.mtv-tint{background:linear-gradient(180deg,#f5f9ff 0%,#eaf2fc 100%)}
+.mtv-section.mtv-tint{background:linear-gradient(180deg,#f4f9ff 0%,#e9f1fb 100%)}
 
 .mtv-wrap{width:min(1120px,calc(100% - 40px));margin-inline:auto}
 
 /* ---------- ترويسة الفيديو ---------- */
-.mtv-head{text-align:center;margin-bottom:clamp(24px,3vw,36px)}
+.mtv-head{text-align:center;margin-bottom:clamp(28px,3.4vw,42px)}
 .mtv-eyebrow{
   display:inline-block;font-size:.78rem;font-weight:700;letter-spacing:.06em;
   color:var(--mtv-blue);background:rgba(29,111,224,.09);
   border:1px solid rgba(29,111,224,.18);border-radius:999px;
-  padding:6px 16px;margin-bottom:12px;
+  padding:7px 18px;margin-bottom:14px;
 }
 .mtv-title{
-  font-size:clamp(1.3rem,3vw,1.95rem);font-weight:800;
-  color:var(--mtv-navy);margin:0 0 10px;line-height:1.35;
+  font-size:clamp(1.35rem,3vw,2.05rem);font-weight:800;
+  color:var(--mtv-navy);margin:0 0 12px;line-height:1.35;
 }
 .mtv-sub{
-  font-size:clamp(.9rem,1.6vw,1.02rem);color:#5b6b82;
-  margin:0 auto;line-height:1.75;max-width:640px;
+  font-size:clamp(.92rem,1.6vw,1.05rem);color:#5b6b82;
+  margin:0 auto;line-height:1.8;max-width:660px;
 }
 
-/* ---------- الإطار والمسرح ---------- */
+/* ---------- الإطار ---------- */
 .mtv-frame{
-  position:relative;border-radius:20px;overflow:hidden;background:#07162b;
-  box-shadow:0 26px 64px rgba(11,28,51,.28);
+  position:relative;border-radius:22px;overflow:hidden;
+  background:var(--mtv-deep);
+  box-shadow:0 30px 70px rgba(11,28,51,.30),0 0 0 1px rgba(11,28,51,.06);
 }
-.mtv-stage{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;background:#07162b}
+
+/* المسرح: شبكة تُكدّس كل المشاهد في خلية واحدة — الارتفاع يتبع أطول مشهد */
+.mtv-stage{
+  position:relative;display:grid;width:100%;
+  background:var(--mtv-deep);overflow:hidden;
+}
 
 /* ---------- المشهد ---------- */
 .mtv-scene{
-  position:absolute;inset:0;
+  grid-area:1/1;
+  display:flex;flex-direction:column;
   opacity:0;visibility:hidden;
-  transition:opacity 1.05s cubic-bezier(.4,0,.2,1),visibility 0s linear 1.05s;
-  will-change:opacity;
+  transition:opacity .85s cubic-bezier(.4,0,.2,1),visibility 0s linear .85s;
 }
 .mtv-scene.is-on{opacity:1;visibility:visible;transition-delay:0s,0s}
 
-.mtv-media{position:absolute;inset:0;overflow:hidden}
-
-/* الصورة — contain داخل مسرح 16:9 يضمن ظهور المحتوى بالكامل بلا اقتصاص */
-.mtv-img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
-.mtv-scene.is-on .mtv-img{animation:mtvDrift 8.6s ease-out both}
-@keyframes mtvDrift{from{transform:scale(1.014)}to{transform:scale(1)}}
-
-/* ---------- شريط التعليق ---------- */
-.mtv-caption{
-  position:absolute;inset-inline:0;bottom:0;
-  padding:clamp(36px,8%,70px) clamp(16px,4%,36px) clamp(14px,3%,26px);
-  background:linear-gradient(180deg,transparent,rgba(7,22,43,.5) 40%,rgba(7,22,43,.93));
-  color:#fff;text-align:center;
-  font-size:clamp(.85rem,1.7vw,1.14rem);font-weight:700;line-height:1.6;
-  pointer-events:none;
+/* الصورة — إطار 16:9 مطابق لنسبة الصور، فلا اقتصاص ولا فراغ */
+.mtv-media{
+  position:relative;width:100%;aspect-ratio:16/9;
+  flex:0 0 auto;overflow:hidden;background:var(--mtv-deep);
 }
-.mtv-scene.is-on .mtv-caption{animation:mtvRise 1s .35s cubic-bezier(.2,.7,.3,1) both}
+.mtv-img{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:contain;
+}
+
+/* وميض ضوئي يمرّ فوق الصورة عند بداية المشهد */
+.mtv-media::after{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:0;
+  background:linear-gradient(115deg,transparent 34%,rgba(255,255,255,.30) 50%,transparent 66%);
+  transform:translateX(-120%);
+}
+.mtv-scene.is-on .mtv-media::after{animation:mtvSheen 1.7s .45s cubic-bezier(.3,0,.2,1) both}
+@keyframes mtvSheen{
+  0%{opacity:0;transform:translateX(-120%)}
+  22%{opacity:1}
+  100%{opacity:0;transform:translateX(120%)}
+}
+
+/* =========================================================================
+   تأثيرات دخول الصورة — خمسة تتناوب على المشاهد
+   جميعها تبدأ بمقياس أصغر من 1 فلا يُقتطع أي جزء من المحتوى
+   ========================================================================= */
+.mtv-scene.is-on[data-fx="zoom"]  .mtv-img{animation:mtvZoom 1.5s cubic-bezier(.16,.84,.28,1) both}
+.mtv-scene.is-on[data-fx="wipe"]  .mtv-img{animation:mtvWipe 1.5s cubic-bezier(.5,0,.15,1) both}
+.mtv-scene.is-on[data-fx="blur"]  .mtv-img{animation:mtvBlur 1.6s cubic-bezier(.2,.7,.2,1) both}
+.mtv-scene.is-on[data-fx="slide"] .mtv-img{animation:mtvSlide 1.5s cubic-bezier(.18,.86,.24,1) both}
+.mtv-scene.is-on[data-fx="rise"]  .mtv-img{animation:mtvRiseImg 1.5s cubic-bezier(.18,.86,.24,1) both}
+
+@keyframes mtvZoom{
+  from{opacity:0;transform:scale(.90)}
+  to{opacity:1;transform:scale(1)}
+}
+@keyframes mtvWipe{
+  from{opacity:1;clip-path:inset(0 0 0 100%);transform:scale(1.0)}
+  to{opacity:1;clip-path:inset(0 0 0 0);transform:scale(1)}
+}
+@keyframes mtvBlur{
+  from{opacity:0;filter:blur(22px);transform:scale(.95)}
+  60%{opacity:1}
+  to{opacity:1;filter:blur(0);transform:scale(1)}
+}
+@keyframes mtvSlide{
+  from{opacity:0;transform:translateX(9%) scale(.93)}
+  to{opacity:1;transform:translateX(0) scale(1)}
+}
+@keyframes mtvRiseImg{
+  from{opacity:0;transform:translateY(7%) scale(.93)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+
+/* ---------- شريط النص أسفل الصورة (لا يغطّيها إطلاقًا) ---------- */
+.mtv-caption{
+  flex:1 1 auto;min-height:var(--mtv-cap);
+  display:flex;align-items:center;justify-content:center;
+  gap:12px;
+  padding:16px clamp(20px,4%,40px);
+  background:
+    radial-gradient(120% 160% at 50% 0%,rgba(29,111,224,.20),transparent 62%),
+    linear-gradient(180deg,#0d2340,var(--mtv-deep));
+  border-top:1px solid rgba(38,198,245,.22);
+  color:#fff;text-align:center;
+  font-size:clamp(.9rem,1.55vw,1.16rem);font-weight:700;line-height:1.65;
+}
+.mtv-caption span{display:inline-block}
+.mtv-scene.is-on .mtv-caption span{animation:mtvCapIn 1s .5s cubic-bezier(.2,.8,.25,1) both}
+@keyframes mtvCapIn{
+  from{opacity:0;transform:translateY(14px)}
+  to{opacity:1;transform:none}
+}
+/* نقطة مضيئة تسبق النص */
+.mtv-caption::before{
+  content:"";width:7px;height:7px;border-radius:50%;flex:0 0 auto;
+  background:var(--mtv-cyan);box-shadow:0 0 12px var(--mtv-cyan);
+}
+.mtv-scene.is-on .mtv-caption::before{animation:mtvPulse 2.4s ease-in-out infinite}
+@keyframes mtvPulse{0%,100%{opacity:.45;transform:scale(.8)}50%{opacity:1;transform:scale(1.15)}}
+.mtv-logo-scene .mtv-caption{display:none}
 
 /* ---------- مشهد الشعار (الافتتاحية والختامية) ---------- */
 .mtv-logo-scene{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:clamp(10px,2vh,20px);text-align:center;padding:clamp(18px,4vw,46px);
+  position:relative;
+  align-items:center;justify-content:center;
+  gap:clamp(12px,2.2vh,22px);text-align:center;padding:clamp(24px,5vw,54px);
   background:
-    radial-gradient(120% 90% at 50% 0%,#123A6B 0%,transparent 62%),
-    linear-gradient(160deg,#0B1C33 0%,#071527 100%);
+    radial-gradient(120% 92% at 50% 0%,#14406f 0%,transparent 64%),
+    linear-gradient(160deg,var(--mtv-navy) 0%,var(--mtv-deep) 100%);
 }
+/* حلقتان تتوسّعان خلف الشعار */
+.mtv-logo-scene::before,
 .mtv-logo-scene::after{
-  content:"";position:absolute;inset:0;pointer-events:none;
-  background:radial-gradient(58% 58% at 50% 45%,rgba(38,198,245,.17),transparent 72%);
+  content:"";position:absolute;top:50%;left:50%;
+  width:min(46%,340px);aspect-ratio:1;border-radius:50%;
+  border:1px solid rgba(38,198,245,.28);
+  transform:translate(-50%,-50%) scale(.4);opacity:0;pointer-events:none;
 }
-.mtv-logo{width:clamp(78px,15%,160px);height:auto;filter:drop-shadow(0 10px 26px rgba(38,198,245,.35))}
-.mtv-logo-rule{width:clamp(48px,10%,96px);height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,#26C6F5,transparent)}
-.mtv-logo-name{font-size:clamp(1.05rem,3.2vw,2.1rem);font-weight:800;color:#fff;margin:0}
-.mtv-logo-tag{font-size:clamp(.8rem,2vw,1.15rem);font-weight:600;color:#26C6F5;margin:0;line-height:1.6}
+.mtv-scene.is-on.mtv-logo-scene::before{animation:mtvRing 4.2s 0.2s ease-out infinite}
+.mtv-scene.is-on.mtv-logo-scene::after{animation:mtvRing 4.2s 2.1s ease-out infinite}
+@keyframes mtvRing{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.4)}
+  18%{opacity:.9}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(1.9)}
+}
 
-.mtv-scene.is-on .mtv-el{animation:mtvRise .95s cubic-bezier(.2,.7,.3,1) both}
-.mtv-scene.is-on .mtv-el:nth-child(2){animation-delay:.16s}
-.mtv-scene.is-on .mtv-el:nth-child(3){animation-delay:.32s}
-.mtv-scene.is-on .mtv-el:nth-child(4){animation-delay:.48s}
-@keyframes mtvRise{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:none}}
+.mtv-logo{
+  width:clamp(88px,16%,178px);height:auto;position:relative;
+  filter:drop-shadow(0 12px 30px rgba(38,198,245,.42));
+}
+.mtv-logo-rule{
+  width:clamp(56px,12%,120px);height:2px;border-radius:2px;position:relative;
+  background:linear-gradient(90deg,transparent,var(--mtv-cyan),transparent);
+}
+.mtv-logo-name{
+  font-size:clamp(1.1rem,3.4vw,2.3rem);font-weight:800;color:#fff;margin:0;
+  position:relative;letter-spacing:.01em;
+}
+.mtv-logo-tag{
+  font-size:clamp(.85rem,2.1vw,1.22rem);font-weight:600;
+  color:var(--mtv-cyan);margin:0;line-height:1.7;position:relative;
+}
 
-/* ---------- شريط التقدّم والنقاط ---------- */
-.mtv-progress{position:relative;height:4px;background:rgba(11,28,51,.14);overflow:hidden}
-.mtv-bar{position:absolute;inset-block:0;inset-inline-start:0;width:0;background:linear-gradient(90deg,var(--mtv-blue),var(--mtv-cyan))}
-.mtv-dots{display:flex;justify-content:center;flex-wrap:wrap;gap:7px;margin-top:18px}
-.mtv-dot{width:7px;height:7px;border-radius:50%;background:rgba(11,28,51,.2);border:0;padding:0;cursor:pointer;transition:background .3s,width .3s}
-.mtv-dot.is-on{width:22px;border-radius:999px;background:linear-gradient(90deg,var(--mtv-blue),var(--mtv-cyan))}
+.mtv-scene.is-on .mtv-el{animation:mtvElIn 1.15s cubic-bezier(.16,.86,.24,1) both}
+.mtv-scene.is-on .mtv-el:nth-of-type(1){animation-delay:.05s}
+.mtv-scene.is-on .mtv-el:nth-of-type(2){animation-delay:.28s}
+.mtv-scene.is-on .mtv-el:nth-of-type(3){animation-delay:.5s}
+.mtv-scene.is-on .mtv-el:nth-of-type(4){animation-delay:.72s}
+@keyframes mtvElIn{
+  from{opacity:0;transform:translateY(26px) scale(.9);filter:blur(8px)}
+  to{opacity:1;transform:none;filter:blur(0)}
+}
+
+/* ---------- سطر أسفل الإطار: العدّاد + النقاط ---------- */
+.mtv-foot{
+  display:flex;align-items:center;gap:14px;
+  margin-top:20px;
+}
+.mtv-badge{
+  display:inline-flex;align-items:center;gap:7px;flex:0 0 auto;
+  padding:6px 13px;border-radius:999px;
+  background:rgba(29,111,224,.08);
+  border:1px solid rgba(29,111,224,.18);
+  color:#4a5d75;font-size:.76rem;font-weight:700;letter-spacing:.05em;
+  font-variant-numeric:tabular-nums;
+}
+.mtv-badge i{
+  width:6px;height:6px;border-radius:50%;background:#33D17A;
+  box-shadow:0 0 8px rgba(51,209,122,.8);animation:mtvPulse 2s ease-in-out infinite;
+}
+
+/* ---------- شريط التقدّم المقسّم ---------- */
+.mtv-progress{
+  display:flex;gap:3px;padding:0;height:5px;
+  background:rgba(11,28,51,.16);
+}
+.mtv-seg{flex:1;position:relative;overflow:hidden;background:rgba(255,255,255,.1)}
+.mtv-seg i{
+  position:absolute;inset-block:0;inset-inline-start:0;width:0;
+  background:linear-gradient(90deg,var(--mtv-blue),var(--mtv-cyan));
+  box-shadow:0 0 10px rgba(38,198,245,.7);
+}
+.mtv-seg.is-done i{width:100%}
+
+/* ---------- النقاط ---------- */
+.mtv-dots{flex:1 1 auto;display:flex;justify-content:center;flex-wrap:wrap;gap:8px}
+.mtv-dot{
+  width:8px;height:8px;border-radius:50%;background:rgba(11,28,51,.2);
+  border:0;padding:0;cursor:pointer;transition:background .3s,width .35s;
+}
+.mtv-dot:hover{background:rgba(29,111,224,.5)}
+.mtv-dot.is-on{width:26px;border-radius:999px;background:linear-gradient(90deg,var(--mtv-blue),var(--mtv-cyan))}
 
 /* =========================================================================
-   مقاس الجوال — إطار مخصّص: الصورة كاملة 16:9 + شريط نص مقروء تحتها
+   مقاس الجوال — عرض كامل من حافة لحافة + نص أكبر أسفل الصورة
    ========================================================================= */
 @media (max-width:768px){
-  .mtv-section{padding:clamp(48px,10vw,72px) 0}
-  .mtv-wrap{width:100%}                       /* عرض كامل من حافة لحافة */
+  .mtv-section{padding:clamp(56px,11vw,84px) 0;--mtv-cap:86px}
+  .mtv-wrap{width:100%}
   .mtv-head{padding-inline:20px}
-  .mtv-dots{padding-inline:20px}
-  .mtv-frame{border-radius:0;box-shadow:0 14px 32px rgba(11,28,51,.2)}
-
-  /* ارتفاع المسرح = ارتفاع صورة 16:9 بعرض الشاشة + شريط التعليق */
-  .mtv-stage{aspect-ratio:auto;height:calc(100vw * 9 / 16 + var(--mtv-cap))}
-
-  .mtv-scene{display:flex;flex-direction:column}
-  .mtv-media{position:relative;inset:auto;width:100%;aspect-ratio:16/9;flex:0 0 auto}
-  .mtv-caption{
-    position:relative;inset:auto;flex:1 1 auto;
-    display:flex;align-items:center;justify-content:center;
-    background:linear-gradient(180deg,#0B1C33,#071527);
-    padding:12px 18px;font-size:.92rem;
-  }
-  .mtv-logo-scene{justify-content:center}
+  .mtv-foot{padding-inline:20px;margin-top:16px;gap:10px}
+  .mtv-frame{border-radius:0;box-shadow:0 16px 36px rgba(11,28,51,.2)}
+  .mtv-caption{font-size:.95rem;padding:14px 18px;line-height:1.6}
+  .mtv-badge{font-size:.7rem;padding:5px 11px}
 }
-
 @media (max-width:380px){
-  .mtv-section{--mtv-cap:82px}
+  .mtv-section{--mtv-cap:94px}
+  .mtv-caption{font-size:.9rem}
 }
 
 /* شاشات كبيرة */
 @media (min-width:1440px){
   .mtv-wrap{width:min(1280px,calc(100% - 64px))}
+  .mtv-section{--mtv-cap:104px}
 }
 
 /* احترام تفضيل تقليل الحركة */
 @media (prefers-reduced-motion:reduce){
-  .mtv-scene,.mtv-scene.is-on .mtv-img,
-  .mtv-scene.is-on .mtv-el,.mtv-scene.is-on .mtv-caption{
+  .mtv-scene,.mtv-scene *,.mtv-scene::before,.mtv-scene::after,.mtv-media::after{
     animation:none!important;transition-duration:.25s!important;
   }
 }
