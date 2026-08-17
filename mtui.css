@@ -294,17 +294,55 @@ footer{padding-top:clamp(56px,6vw,92px)}
 /* =========================================================================
    5) ختم «متجر موثّق» — المركز السعودي للتنافسية والأعمال
    -------------------------------------------------------------------------
-   السكربت الرسمي يضع الختم عائمًا في زاوية الشاشة افتراضيًا.
-   القواعد أدناه تُثبّته داخل مربع «تحقق من بيانات المنشأة» في التذييل.
+   مربع مستقل في التذييل قبل مربع وزارة التجارة، بألوان المتجر.
+   السكربت الرسمي يضع الختم عائمًا في زاوية الشاشة افتراضيًا،
+   والقواعد أدناه تُثبّته داخل المربع وتضبط حجمه على كل الشاشات.
    ========================================================================= */
-.sbc-seal-wrap{
-  margin-top:20px;padding-top:18px;
-  border-top:1px dashed rgba(255,255,255,.16);
-  display:flex;flex-direction:column;align-items:flex-start;gap:12px;
+
+/* ---------- المربع ---------- */
+.footer-block.sbc-block{
+  position:relative;
+  overflow:hidden;
+  background:
+    radial-gradient(120% 100% at 100% 0%,rgba(127,178,255,.16),transparent 62%),
+    linear-gradient(160deg,rgba(47,111,237,.14),rgba(255,255,255,.04));
+  border:1px solid rgba(127,178,255,.28);
+  display:flex;flex-direction:column;
 }
-.sbc-seal-label{
-  font-size:.78rem;font-weight:700;line-height:1.7;
-  color:rgba(255,255,255,.72);
+/* شريط علوي بتدرّج ألوان المتجر */
+.footer-block.sbc-block::before{
+  content:"";position:absolute;inset-inline:0;top:0;height:3px;
+  background:linear-gradient(90deg,var(--gold-light),var(--gold),var(--gold-light));
+}
+.footer-block.sbc-block h4{
+  display:flex;align-items:center;gap:9px;
+  margin-bottom:clamp(10px,1.4vw,14px);
+}
+/* أيقونة توثيق قبل العنوان */
+.footer-block.sbc-block h4::before{
+  content:"";flex:0 0 auto;
+  width:clamp(20px,2.4vw,24px);height:clamp(20px,2.4vw,24px);
+  background:linear-gradient(135deg,var(--gold-light),var(--gold));
+  border-radius:7px;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2l7 3v6c0 5-3 8-7 11-4-3-7-6-7-11V5z'/%3E%3Cpath d='M9 12l2 2 4-4'/%3E%3C/svg%3E") center/78% no-repeat;
+          mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2l7 3v6c0 5-3 8-7 11-4-3-7-6-7-11V5z'/%3E%3Cpath d='M9 12l2 2 4-4'/%3E%3C/svg%3E") center/78% no-repeat;
+}
+.sbc-desc{
+  font-size:clamp(.78rem,1.1vw,.86rem);
+  color:rgba(255,255,255,.74);
+  line-height:1.85;
+  margin:0 0 clamp(14px,1.8vw,20px);
+}
+
+/* ---------- حاوية الختم ---------- */
+.sbc-seal-wrap{
+  margin-top:auto;
+  display:flex;align-items:center;justify-content:center;
+  padding:clamp(12px,1.8vw,18px);
+  background:rgba(255,255,255,.94);
+  border:1px solid rgba(127,178,255,.35);
+  border-radius:14px;
+  min-height:clamp(96px,12vw,132px);
 }
 
 /* إبطال أي تموضع عائم يفرضه السكربت — الختم يبقى داخل المربع */
@@ -316,21 +354,28 @@ footer{padding-top:clamp(56px,6vw,92px)}
   margin:0 !important;
   z-index:auto !important;
   float:none !important;
-  transform:none !important;
+  box-shadow:none !important;
 }
 .sbc-seal-wrap .sbc-verify-seal{
   max-width:100%;
-  display:block;
-  border-radius:12px;
-  overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
 }
+
+/* ضبط الحجم على كل الشاشات — يتبع نظام clamp المعتمد في الموقع */
 .sbc-seal-wrap .sbc-verify-seal img,
 .sbc-seal-wrap .sbc-verify-seal svg,
-.sbc-seal-wrap .sbc-verify-seal canvas,
+.sbc-seal-wrap .sbc-verify-seal canvas{
+  max-width:100% !important;
+  width:auto !important;
+  height:auto !important;
+  max-height:clamp(88px,11vw,124px) !important;
+  display:block;
+}
 .sbc-seal-wrap .sbc-verify-seal iframe{
   max-width:100% !important;
-  height:auto !important;
-  display:block;
+  width:100% !important;
+  height:clamp(96px,12vw,132px) !important;
+  border:0 !important;display:block;
 }
 
 /* إن أنشأ السكربت الختم خارج المربع (احتياط) نُبعده عن زر واتساب العائم */
@@ -341,7 +386,36 @@ body > .sbc-verify-seal{
   z-index:900 !important;
 }
 
+/* ---------- الشاشات المختلفة ---------- */
+@media (max-width:900px){
+  .sbc-seal-wrap{min-height:118px}
+  .sbc-seal-wrap .sbc-verify-seal img,
+  .sbc-seal-wrap .sbc-verify-seal svg,
+  .sbc-seal-wrap .sbc-verify-seal canvas{max-height:110px !important}
+  .sbc-seal-wrap .sbc-verify-seal iframe{height:118px !important}
+}
 @media (max-width:768px){
-  .sbc-seal-wrap{margin-top:18px;padding-top:16px}
+  .footer-block.sbc-block{padding:22px}
+  .sbc-desc{font-size:.85rem}
+  .sbc-seal-wrap{min-height:124px;padding:16px}
+  .sbc-seal-wrap .sbc-verify-seal img,
+  .sbc-seal-wrap .sbc-verify-seal svg,
+  .sbc-seal-wrap .sbc-verify-seal canvas{max-height:116px !important}
+  .sbc-seal-wrap .sbc-verify-seal iframe{height:124px !important}
   body > .sbc-verify-seal{bottom:88px !important;inset-inline-end:14px !important}
+}
+@media (max-width:480px){
+  .footer-block.sbc-block{padding:20px}
+  .sbc-seal-wrap{min-height:112px;padding:14px;border-radius:12px}
+  .sbc-seal-wrap .sbc-verify-seal img,
+  .sbc-seal-wrap .sbc-verify-seal svg,
+  .sbc-seal-wrap .sbc-verify-seal canvas{max-height:104px !important}
+  .sbc-seal-wrap .sbc-verify-seal iframe{height:112px !important}
+}
+@media (min-width:1440px){
+  .sbc-seal-wrap{min-height:140px}
+  .sbc-seal-wrap .sbc-verify-seal img,
+  .sbc-seal-wrap .sbc-verify-seal svg,
+  .sbc-seal-wrap .sbc-verify-seal canvas{max-height:132px !important}
+  .sbc-seal-wrap .sbc-verify-seal iframe{height:140px !important}
 }
