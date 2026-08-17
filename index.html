@@ -35,16 +35,41 @@
    والقواعد أدناه تُثبّته داخل المربع وتضبط حجمه على كل الشاشات.
    ========================================================================= */
 
-/* ---------- المربع ---------- */
+/* =========================================================================
+   شبكة التذييل — مربعان في كل سطر على جميع الشاشات،
+   وختم التوثيق في سطر كامل مستقل أعلى الشبكة.
+   ========================================================================= */
+.footer-grid{
+  grid-template-columns:1fr 1fr !important;
+  gap:clamp(14px,2vw,26px) !important;
+  align-items:stretch;
+}
+.footer-grid > .footer-block{min-width:0}          /* يمنع تمدّد المحتوى الطويل */
+.footer-grid > .sbc-block{grid-column:1 / -1}      /* الختم يأخذ السطر كاملًا */
+
+/* المحتوى الطويل لا يكسر العمود الضيّق */
+.footer-grid .establishment-row{gap:10px;flex-wrap:wrap}
+.footer-grid .establishment-row span:last-child{text-align:end}
+.footer-grid .contact-item{word-break:break-word;overflow-wrap:anywhere}
+.footer-grid .verify-btn{max-width:100%;justify-content:center;text-align:center}
+
+/* ---------- مربع الختم ---------- */
 .footer-block.sbc-block{
   position:relative;
   overflow:hidden;
   background:
-    radial-gradient(120% 100% at 100% 0%,rgba(127,178,255,.16),transparent 62%),
+    radial-gradient(90% 130% at 100% 0%,rgba(127,178,255,.16),transparent 62%),
     linear-gradient(160deg,rgba(47,111,237,.14),rgba(255,255,255,.04));
   border:1px solid rgba(127,178,255,.28);
-  display:flex;flex-direction:column;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(280px,42%);
+  align-items:center;
+  column-gap:clamp(20px,3vw,36px);
+  row-gap:16px;
 }
+.footer-block.sbc-block h4{grid-column:1;align-self:end;margin-bottom:0}
+.footer-block.sbc-block .sbc-desc{grid-column:1;align-self:start}
+.footer-block.sbc-block .sbc-seal-wrap{grid-column:2;grid-row:1 / span 2}
 /* شريط علوي بتدرّج ألوان المتجر */
 .footer-block.sbc-block::before{
   content:"";position:absolute;inset-inline:0;top:0;height:3px;
@@ -70,15 +95,16 @@
   margin:0 0 clamp(14px,1.8vw,20px);
 }
 
-/* ---------- حاوية الختم ---------- */
+/* ---------- حاوية الختم — تعرض الرمز كاملًا ---------- */
 .sbc-seal-wrap{
-  margin-top:auto;
   display:flex;align-items:center;justify-content:center;
-  padding:clamp(12px,1.8vw,18px);
-  background:rgba(255,255,255,.94);
+  padding:clamp(14px,2vw,22px);
+  background:#fff;
   border:1px solid rgba(127,178,255,.35);
-  border-radius:14px;
-  min-height:clamp(96px,12vw,132px);
+  border-radius:16px;
+  box-shadow:0 10px 26px rgba(6,17,32,.22);
+  min-height:clamp(120px,14vw,168px);
+  overflow:auto;
 }
 
 /* إبطال أي تموضع عائم يفرضه السكربت — الختم يبقى داخل المربع */
@@ -97,20 +123,21 @@
   display:flex;align-items:center;justify-content:center;
 }
 
-/* ضبط الحجم على كل الشاشات — يتبع نظام clamp المعتمد في الموقع */
+/* الرمز يظهر كاملًا بلا اقتصاص على كل الشاشات */
 .sbc-seal-wrap .sbc-verify-seal img,
 .sbc-seal-wrap .sbc-verify-seal svg,
 .sbc-seal-wrap .sbc-verify-seal canvas{
   max-width:100% !important;
   width:auto !important;
   height:auto !important;
-  max-height:clamp(88px,11vw,124px) !important;
+  max-height:clamp(110px,13vw,150px) !important;
+  object-fit:contain !important;
   display:block;
 }
 .sbc-seal-wrap .sbc-verify-seal iframe{
   max-width:100% !important;
   width:100% !important;
-  height:clamp(96px,12vw,132px) !important;
+  min-height:clamp(120px,14vw,168px) !important;
   border:0 !important;display:block;
 }
 
@@ -122,38 +149,58 @@ body > .sbc-verify-seal{
   z-index:900 !important;
 }
 
-/* ---------- الشاشات المختلفة ---------- */
+/* =========================================================================
+   الشاشات المختلفة — مربعان في السطر دائمًا، والختم سطر كامل
+   ========================================================================= */
 @media (max-width:900px){
-  .sbc-seal-wrap{min-height:118px}
-  .sbc-seal-wrap .sbc-verify-seal img,
-  .sbc-seal-wrap .sbc-verify-seal svg,
-  .sbc-seal-wrap .sbc-verify-seal canvas{max-height:110px !important}
-  .sbc-seal-wrap .sbc-verify-seal iframe{height:118px !important}
+  .footer-block{padding:20px}
+  .footer-block.sbc-block{
+    grid-template-columns:minmax(0,1fr) minmax(240px,44%);
+  }
 }
-@media (max-width:768px){
-  .footer-block.sbc-block{padding:22px}
-  .sbc-desc{font-size:.85rem}
-  .sbc-seal-wrap{min-height:124px;padding:16px}
+
+/* لوحي صغير وجوال: الختم يصير عمودًا واحدًا داخل سطره الكامل */
+@media (max-width:680px){
+  .footer-block.sbc-block{
+    grid-template-columns:1fr;
+    row-gap:14px;
+  }
+  .footer-block.sbc-block h4{align-self:auto}
+  .footer-block.sbc-block .sbc-desc{align-self:auto}
+  .footer-block.sbc-block .sbc-seal-wrap{grid-column:1;grid-row:auto}
+}
+
+@media (max-width:560px){
+  .footer-block{padding:16px;border-radius:16px}
+  .footer-block h4{font-size:14.5px;margin-bottom:12px}
+  .footer-grid .establishment-row{font-size:12px;padding:6px 0}
+  .footer-grid .contact-item{font-size:12px;gap:8px}
+  .footer-grid .contact-item .icon-3d{width:28px;height:28px}
+  .footer-grid .verify-block p{font-size:12px;line-height:1.7}
+  .footer-grid .verify-btn{font-size:11.5px;padding:9px 12px;gap:6px}
+  .sbc-desc{font-size:12.5px}
+  .sbc-seal-wrap{min-height:132px;padding:14px;border-radius:14px}
   .sbc-seal-wrap .sbc-verify-seal img,
   .sbc-seal-wrap .sbc-verify-seal svg,
-  .sbc-seal-wrap .sbc-verify-seal canvas{max-height:116px !important}
-  .sbc-seal-wrap .sbc-verify-seal iframe{height:124px !important}
+  .sbc-seal-wrap .sbc-verify-seal canvas{max-height:124px !important}
+  .sbc-seal-wrap .sbc-verify-seal iframe{min-height:132px !important}
   body > .sbc-verify-seal{bottom:88px !important;inset-inline-end:14px !important}
 }
-@media (max-width:480px){
-  .footer-block.sbc-block{padding:20px}
-  .sbc-seal-wrap{min-height:112px;padding:14px;border-radius:12px}
-  .sbc-seal-wrap .sbc-verify-seal img,
-  .sbc-seal-wrap .sbc-verify-seal svg,
-  .sbc-seal-wrap .sbc-verify-seal canvas{max-height:104px !important}
-  .sbc-seal-wrap .sbc-verify-seal iframe{height:112px !important}
+
+@media (max-width:400px){
+  .footer-grid{gap:12px !important}
+  .footer-block{padding:14px}
+  .footer-block h4{font-size:13.5px}
+  .footer-grid .establishment-row{font-size:11.5px}
+  .footer-grid .contact-item{font-size:11.5px}
 }
+
 @media (min-width:1440px){
-  .sbc-seal-wrap{min-height:140px}
+  .sbc-seal-wrap{min-height:176px}
   .sbc-seal-wrap .sbc-verify-seal img,
   .sbc-seal-wrap .sbc-verify-seal svg,
-  .sbc-seal-wrap .sbc-verify-seal canvas{max-height:132px !important}
-  .sbc-seal-wrap .sbc-verify-seal iframe{height:140px !important}
+  .sbc-seal-wrap .sbc-verify-seal canvas{max-height:158px !important}
+  .sbc-seal-wrap .sbc-verify-seal iframe{min-height:176px !important}
 }
 </style>
 <script type="application/ld+json">
@@ -393,20 +440,20 @@ body > .sbc-verify-seal{
 </div>
 </div>
 <div class="footer-grid">
-<div class="footer-block reveal">
-<h4>بيانات المنشأة</h4>
-<div class="establishment-row"><span>الاسم</span><span>شركة مدى التسهيل للتجارة</span></div>
-<div class="establishment-row"><span>نوع الكيان</span><span>شركة ذات مسؤولية محدودة</span></div>
-<div class="establishment-row"><span>الرقم الوطني الموحد</span><span>7049529501</span></div>
-<div class="establishment-row"><span>الرقم الضريبي</span><span>312421596900003</span></div>
-</div>
-<!-- ختم «متجر موثّق» — المركز السعودي للتنافسية والأعمال -->
+<!-- ختم «متجر موثّق» — سطر كامل مستقل أعلى الشبكة -->
 <div class="footer-block sbc-block reveal">
 <h4>متجر موثّق</h4>
 <p class="sbc-desc">توثيق رسمي من المركز السعودي للتنافسية والأعمال — امسح الرمز للاطلاع على شهادة التوثيق.</p>
 <div class="sbc-seal-wrap">
 <div class="sbc-verify-seal" data-token="VGF6Qno2YURoZS9NOWJZZ2ZQM0djUT09"></div>
 </div>
+</div>
+<div class="footer-block reveal">
+<h4>بيانات المنشأة</h4>
+<div class="establishment-row"><span>الاسم</span><span>شركة مدى التسهيل للتجارة</span></div>
+<div class="establishment-row"><span>نوع الكيان</span><span>شركة ذات مسؤولية محدودة</span></div>
+<div class="establishment-row"><span>الرقم الوطني الموحد</span><span>7049529501</span></div>
+<div class="establishment-row"><span>الرقم الضريبي</span><span>312421596900003</span></div>
 </div>
 <div class="footer-block verify-block reveal">
 <h4>تحقق من بيانات المنشأة</h4>
